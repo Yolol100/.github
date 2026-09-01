@@ -1,0 +1,41 @@
+name: Featureverzoek
+description: Stel een begrensde verbetering voor vanuit een concreet probleem.
+title: "[Feature] "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Probleem
+      description: Welk probleem bestaat nu, voor wie en wanneer?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Gewenst resultaat
+      description: Welk observeerbaar resultaat zou het probleem oplossen?
+    validations:
+      required: true
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Grenzen en risico's
+      description: Welke bestaande API's, workflows, privacy- of veiligheidsgrenzen mogen niet veranderen?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Acceptatiebewijs
+      description: Hoe kan de verbetering objectief worden getest of beoordeeld?
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Privacy
+      options:
+        - label: Ik heb geen secrets, klantdata, accountgegevens of privélogs toegevoegd.
+          required: true
