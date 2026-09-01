@@ -1,0 +1,25 @@
+name: Beveiligingscontact
+description: Vraag om een veilig kanaal zonder kwetsbaarheidsdetails openbaar te maken.
+title: "[Security contact] "
+labels:
+  - security
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Deel hier geen technische details, stappen om het probleem te reproduceren, logs, tokens, persoonsgegevens of klantdata. De maintainer geeft een geschikt privé-kanaal terug.
+  - type: input
+    id: repository
+    attributes:
+      label: Betrokken repository
+      description: Noem alleen de repositorynaam.
+      placeholder: eigenaar/repository
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Bevestiging
+      options:
+        - label: Ik heb geen details over de kwetsbaarheid in dit publieke formulier geplaatst.
+          required: true
