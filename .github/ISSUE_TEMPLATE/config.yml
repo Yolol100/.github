@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Beveiligingsmelding
+    url: https://github.com/Yolol100/.github/security
+    about: Lees het beveiligingsbeleid en gebruik private vulnerability reporting waar beschikbaar.
