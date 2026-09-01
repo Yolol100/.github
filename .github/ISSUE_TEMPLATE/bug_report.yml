@@ -1,0 +1,53 @@
+name: Bugrapport
+description: Meld een reproduceerbaar technisch defect zonder gevoelige gegevens.
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Deel geen tokens, wachtwoorden, klantinhoud, accountgegevens, privélogs of productieexports. Meld kwetsbaarheden via SECURITY.md.
+  - type: input
+    id: version
+    attributes:
+      label: Versie of commit
+      description: Welke release, tag of commit is getroffen?
+      placeholder: v1.2.3 of volledige commit-SHA
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Probleem
+      description: Wat gebeurde er en wat verwachtte je?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduceerstappen
+      description: Geef de kleinste veilige reeks stappen waarmee het defect opnieuw optreedt.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Omgeving
+      description: Relevante OS-, browser-, PHP-, WordPress-, Python- of addonversies zonder privégegevens.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Bewijs
+      description: Deel alleen opgeschoonde foutmeldingen, screenshots of testresultaten.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Veiligheidscontrole
+      options:
+        - label: Ik heb geen secrets, klantdata, accountgegevens of privélogs toegevoegd.
+          required: true
+        - label: Dit is geen openbaar gemaakte kwetsbaarheid.
+          required: true
