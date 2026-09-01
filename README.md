@@ -12,7 +12,7 @@ Deze repository levert standaard community-, security- en bijdragebestanden aan 
 - [Beveiligingscontact](.github/ISSUE_TEMPLATE/security_contact.yml) — alleen een veilig contactverzoek, zonder kwetsbaarheidsdetails.
 - [Pull-requesttemplate](.github/PULL_REQUEST_TEMPLATE.md) — risico, bewijs en rollback.
 
-Privérepositories erven deze bestanden niet automatisch en moeten ze expliciet kopiëren of een eigen repositoryspecifieke versie onderhouden. Repositoryspecifieke bestanden hebben altijd voorrang op deze defaults. Runtime-, beveiligings- en releaseclaims moeten door de betreffende repository zelf worden bewezen.
+Privérepositories erven deze bestanden niet automatisch en moeten ze expliciet kopiëren of een eigen repositoryspecifieke versie onderhouden. Een publieke repository met eigen bestanden onder `.github/ISSUE_TEMPLATE/` erft de centrale formulieren evenmin en moet daarom `security_contact.yml` lokaal kopiëren wanneer geen private vulnerability reporting beschikbaar is. Repositoryspecifieke bestanden hebben altijd voorrang op deze defaults. Runtime-, beveiligings- en releaseclaims moeten door de betreffende repository zelf worden bewezen.
 
 ## Privacy
 
