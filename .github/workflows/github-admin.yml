@@ -1,0 +1,37 @@
+name: Apply GitHub admin config
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - github-admin.json
+      - .github/scripts/apply-github-admin.py
+      - .github/workflows/github-admin.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Check GitHub admin token
+        shell: bash
+        env:
+          GH_ADMIN_TOKEN: ${{ secrets.GH_ADMIN_TOKEN }}
+        run: |
+          if [ -z "$GH_ADMIN_TOKEN" ]; then
+            echo "::error::Missing repository secret GH_ADMIN_TOKEN."
+            echo "::error::Create a fine-grained GitHub token with Administration: write access to the repositories managed by github-admin.json, then save it as GH_ADMIN_TOKEN in this repository."
+            exit 1
+          fi
+
+      - name: Apply repository metadata
+        env:
+          GH_TOKEN: ${{ secrets.GH_ADMIN_TOKEN }}
+        run: python .github/scripts/apply-github-admin.py github-admin.json
