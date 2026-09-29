@@ -1,0 +1,39 @@
+name: GitHub admin control CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - github-admin.json
+      - .github/scripts/apply-github-admin.py
+      - .github/tests/test_github_admin.py
+      - .github/workflows/github-admin.yml
+      - .github/workflows/github-admin-ci.yml
+  pull_request:
+    paths:
+      - github-admin.json
+      - .github/scripts/apply-github-admin.py
+      - .github/tests/test_github_admin.py
+      - .github/workflows/github-admin.yml
+      - .github/workflows/github-admin-ci.yml
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - name: Syntax check
+        run: python3 -m py_compile .github/scripts/apply-github-admin.py .github/tests/test_github_admin.py
+
+      - name: Validate live configuration file
+        run: python3 .github/scripts/apply-github-admin.py github-admin.json --validate-only
+
+      - name: Run scenario tests
+        run: python3 -m unittest discover -s .github/tests -p 'test_*.py' -v
