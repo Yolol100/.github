@@ -42,6 +42,12 @@ def validate(cfg):
     if not owner or not OWNER_RE.fullmatch(owner):
         raise ConfigError("Invalid owner in github-admin.json")
 
+    expected_owner = os.environ.get("GITHUB_REPOSITORY_OWNER")
+    if expected_owner and owner.lower() != expected_owner.lower():
+        raise ConfigError(
+            f"Config owner {owner!r} does not match workflow repository owner {expected_owner!r}"
+        )
+
     repos = cfg.get("repositories")
     if not isinstance(repos, list) or not repos:
         raise ConfigError("repositories must be a non-empty list")
