@@ -2,6 +2,7 @@ import importlib.util
 import json
 import pathlib
 import unittest
+from unittest.mock import patch
 
 SCRIPT = pathlib.Path(__file__).parents[1] / "scripts" / "apply-github-admin.py"
 SPEC = importlib.util.spec_from_file_location("github_admin", SCRIPT)
@@ -100,6 +101,12 @@ class GitHubAdminTests(unittest.TestCase):
     def test_validate_accepts_valid_config(self):
         cfg = self.config()
         self.assertEqual(ga.validate(cfg), cfg)
+
+    def test_validate_rejects_workflow_owner_mismatch(self):
+        cfg = self.config()
+        with patch.dict(ga.os.environ, {"GITHUB_REPOSITORY_OWNER": "OtherOwner"}, clear=False):
+            with self.assertRaises(ga.ConfigError):
+                ga.validate(cfg)
 
     def test_validate_rejects_duplicate_repo(self):
         cfg = self.config()
