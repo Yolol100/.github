@@ -81,6 +81,7 @@ class FakeRunner:
 class GitHubAdminTests(unittest.TestCase):
     def config(self):
         return {
+            "schema_version": 1,
             "owner": "Yolol100",
             "repositories": [
                 {
@@ -107,6 +108,12 @@ class GitHubAdminTests(unittest.TestCase):
         with patch.dict(ga.os.environ, {"GITHUB_REPOSITORY_OWNER": "OtherOwner"}, clear=False):
             with self.assertRaises(ga.ConfigError):
                 ga.validate(cfg)
+
+    def test_validate_rejects_missing_schema_version(self):
+        cfg = self.config()
+        del cfg["schema_version"]
+        with self.assertRaises(ga.ConfigError):
+            ga.validate(cfg)
 
     def test_validate_rejects_duplicate_repo(self):
         cfg = self.config()
