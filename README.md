@@ -14,6 +14,10 @@ Deze repository levert standaard community-, security- en bijdragebestanden aan 
 
 Privérepositories erven deze bestanden niet automatisch en moeten ze expliciet kopiëren of een eigen repositoryspecifieke versie onderhouden. Een publieke repository met eigen bestanden onder `.github/ISSUE_TEMPLATE/` erft de centrale formulieren evenmin en moet daarom `security_contact.yml` lokaal kopiëren wanneer geen private vulnerability reporting beschikbaar is. Repositoryspecifieke bestanden hebben altijd voorrang op deze defaults. Runtime-, beveiligings- en releaseclaims moeten door de betreffende repository zelf worden bewezen.
 
+## Tooling
+
+- [GitHub Admin Companion](tools/github-admin-companion/) — publieke lokale MCP-tool voor repository descriptions, homepagevelden, topics en profiel-pininspectie via een bestaande `gh`-sessie.
+
 ## Privacy
 
 Plaats nooit tokens, wachtwoorden, privélogs, klantinhoud, medische gegevens, accountgegevens of productieexports in publieke issues, pull requests of artifacts.
