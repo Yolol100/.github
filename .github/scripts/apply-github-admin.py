@@ -79,21 +79,34 @@ def validate(cfg):
             raise ConfigError(f"Duplicate repository entry: {name}")
         seen.add(name)
 
-        description = item.get("description")
-        homepage = item.get("homepage")
-        topics = item.get("topics")
+        managed_fields = ("description", "homepage", "topics")
+        if not any(field in item for field in managed_fields):
+            raise ConfigError(
+                f"Repository {name} must manage at least one of: description, homepage, topics"
+            )
 
-        if not isinstance(description, str) or len(description) > 350:
-            raise ConfigError(f"Invalid description for {name}")
-        if not isinstance(homepage, str) or not homepage.startswith(("https://", "http://")):
-            raise ConfigError(f"Invalid homepage for {name}")
-        if not isinstance(topics, list) or len(topics) > 20:
-            raise ConfigError(f"Invalid topics for {name}")
-        if len(topics) != len(set(topics)):
-            raise ConfigError(f"Duplicate topic for {name}")
-        for topic in topics:
-            if not isinstance(topic, str) or not TOPIC_RE.fullmatch(topic):
-                raise ConfigError(f"Invalid topic for {name}: {topic!r}")
+        if "description" in item:
+            description = item["description"]
+            if not isinstance(description, str) or len(description) > 350:
+                raise ConfigError(f"Invalid description for {name}")
+
+        if "homepage" in item:
+            homepage = item["homepage"]
+            if (
+                not isinstance(homepage, str)
+                or (homepage and not homepage.startswith(("https://", "http://")))
+            ):
+                raise ConfigError(f"Invalid homepage for {name}")
+
+        if "topics" in item:
+            topics = item["topics"]
+            if not isinstance(topics, list) or len(topics) > 20:
+                raise ConfigError(f"Invalid topics for {name}")
+            if len(topics) != len(set(topics)):
+                raise ConfigError(f"Duplicate topic for {name}")
+            for topic in topics:
+                if not isinstance(topic, str) or not TOPIC_RE.fullmatch(topic):
+                    raise ConfigError(f"Invalid topic for {name}: {topic!r}")
 
     return cfg
 
@@ -106,12 +119,24 @@ def normalize_state(raw):
     }
 
 
-def desired_state(item):
-    return {
-        "description": item["description"],
-        "homepage": item["homepage"],
-        "topics": sorted(item["topics"]),
-    }
+def desired_state(item, current=None):
+    target = dict(current or {
+        "description": "",
+        "homepage": "",
+        "topics": [],
+    })
+    target["topics"] = list(target.get("topics", []))
+
+    if "description" in item:
+        target["description"] = item["description"]
+    if "homepage" in item:
+        target["homepage"] = item["homepage"]
+    if "topics" in item:
+        target["topics"] = sorted(item["topics"])
+    else:
+        target["topics"] = sorted(target["topics"])
+
+    return target
 
 
 def get_repo_state(repo, runner=run_gh):
@@ -123,17 +148,23 @@ def get_repo_state(repo, runner=run_gh):
 
 
 def build_edit_args(repo, current, target):
-    args = [
-        "repo", "edit", repo,
-        "--description", target["description"],
-        "--homepage", target["homepage"],
-    ]
+    args = ["repo", "edit", repo]
+
+    if current["description"] != target["description"]:
+        args.extend(["--description", target["description"]])
+    if current["homepage"] != target["homepage"]:
+        args.extend(["--homepage", target["homepage"]])
+
     for topic in current["topics"]:
         if topic not in target["topics"]:
             args.extend(["--remove-topic", topic])
     for topic in target["topics"]:
         if topic not in current["topics"]:
             args.extend(["--add-topic", topic])
+
+    if len(args) == 3:
+        raise GhError(f"No repository edit required for {repo}")
+
     return args
 
 
@@ -159,8 +190,8 @@ def apply_all(cfg, runner=run_gh, dry_run=False):
         plan = []
         for item in cfg["repositories"]:
             repo = f"{owner}/{item['name']}"
-            target = desired_state(item)
             current = baseline[repo]
+            target = desired_state(item, current)
             plan.append({
                 "repo": repo,
                 "change_required": not states_equal(current, target),
@@ -175,8 +206,8 @@ def apply_all(cfg, runner=run_gh, dry_run=False):
     try:
         for item in cfg["repositories"]:
             repo = f"{owner}/{item['name']}"
-            target = desired_state(item)
             baseline_state = baseline[repo]
+            target = desired_state(item, baseline_state)
 
             fresh = get_repo_state(repo, runner)
             if not states_equal(fresh, baseline_state):
