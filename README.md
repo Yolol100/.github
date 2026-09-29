@@ -17,10 +17,18 @@ Privérepositories erven deze bestanden niet automatisch en moeten ze expliciet 
 ## GitHub admin control
 
 - [`github-admin.json`](github-admin.json) is the source of truth for repository descriptions, homepage URLs and topics that ChatGPT may safely maintain through the existing GitHub connector.
-- [`.github/workflows/github-admin.yml`](.github/workflows/github-admin.yml) applies changes made to that file.
-- [`.github/scripts/apply-github-admin.py`](.github/scripts/apply-github-admin.py) validates, applies and reads back every configured repository through GitHub CLI.
-- The workflow requires one repository secret named `GH_ADMIN_TOKEN` with fine-grained **Administration: write** access to the managed repositories. The secret is used only by GitHub Actions and is never stored in this repository.
-- Personal profile pins are not changed by this workflow because GitHub does not expose a supported public write operation for them.
+- [`.github/workflows/github-admin.yml`](.github/workflows/github-admin.yml) applies config changes automatically. It validates first, previews the diff, applies only required changes, reads every result back and rolls back earlier writes when a later repository fails.
+- [`.github/workflows/github-admin-ci.yml`](.github/workflows/github-admin-ci.yml) runs syntax, config and scenario tests without privileged credentials.
+- [`.github/scripts/apply-github-admin.py`](.github/scripts/apply-github-admin.py) rejects malformed config, refuses stale writes after preflight and locks the config owner to the GitHub account that owns this control repository.
+- External Actions are pinned to an immutable commit SHA and checkout credentials are not persisted.
+
+### One-time credential setup
+
+The apply workflow requires a repository secret named `GH_ADMIN_TOKEN`. Use a **dedicated fine-grained personal access token**, limited to only the repositories managed in `github-admin.json`, with repository permission **Administration: write**. Do not reuse or pipe the broad OAuth token from `gh auth token` into this secret.
+
+Create the fine-grained token in GitHub account settings, then store that token as the `GH_ADMIN_TOKEN` Actions secret on `Yolol100/.github`. The token is consumed only by the apply job and is never committed to this repository.
+
+Personal profile pins are intentionally outside this automation: GitHub documents pin changes through **Customize your pins**, while its public GraphQL profile surface exposes pin state for reading but no supported personal-profile pin write mutation.
 
 ## Privacy
 
