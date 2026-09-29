@@ -38,6 +38,9 @@ def run_gh(args, capture=True):
 
 
 def validate(cfg):
+    if cfg.get("schema_version") != 1:
+        raise ConfigError("Unsupported or missing schema_version; expected 1")
+
     owner = cfg.get("owner")
     if not owner or not OWNER_RE.fullmatch(owner):
         raise ConfigError("Invalid owner in github-admin.json")
