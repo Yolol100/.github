@@ -26,6 +26,7 @@ class FakeRunner:
         self.fail_edit_repo = None
         self.fail_view_repo = None
         self.mutate_on_second_view = None
+        self.profile_nodes = []
 
     def __call__(self, args, capture=True):
         if args[:2] == ["auth", "status"]:
@@ -47,6 +48,17 @@ class FakeRunner:
                 "description": state["description"],
                 "homepageUrl": state["homepage"],
                 "repositoryTopics": [{"name": t} for t in state["topics"]],
+            })
+
+        if args[:2] == ["api", "graphql"]:
+            return json.dumps({
+                "data": {
+                    "user": {
+                        "pinnedItems": {
+                            "nodes": self.profile_nodes
+                        }
+                    }
+                }
             })
 
         if args[:2] == ["repo", "edit"]:
@@ -83,6 +95,9 @@ class GitHubAdminTests(unittest.TestCase):
         return {
             "schema_version": 1,
             "owner": "Yolol100",
+            "profile": {
+                "desired_pins": ["One", "Two"]
+            },
             "repositories": [
                 {
                     "name": "One",
@@ -139,6 +154,58 @@ class GitHubAdminTests(unittest.TestCase):
         with self.assertRaises(ga.ConfigError):
             ga.validate(cfg)
 
+    def test_validate_rejects_more_than_six_pins(self):
+        cfg = self.config()
+        cfg["profile"]["desired_pins"] = [f"Repo-{i}" for i in range(7)]
+        with self.assertRaises(ga.ConfigError):
+            ga.validate(cfg)
+
+    def test_validate_rejects_duplicate_pins(self):
+        cfg = self.config()
+        cfg["profile"]["desired_pins"] = ["One", "One"]
+        with self.assertRaises(ga.ConfigError):
+            ga.validate(cfg)
+
+    def test_profile_pin_state_matches_exact_order(self):
+        cfg = self.config()
+        fake = FakeRunner({
+            "Yolol100/One": repo_state(),
+            "Yolol100/Two": repo_state(),
+        })
+        fake.profile_nodes = [
+            {"__typename": "Repository", "nameWithOwner": "Yolol100/One"},
+            {"__typename": "Repository", "nameWithOwner": "Yolol100/Two"},
+        ]
+        state = ga.profile_pin_state(cfg, runner=fake)
+        self.assertTrue(state["matches"])
+        self.assertFalse(state["write_supported"])
+
+    def test_profile_pin_state_detects_wrong_order(self):
+        cfg = self.config()
+        fake = FakeRunner({
+            "Yolol100/One": repo_state(),
+            "Yolol100/Two": repo_state(),
+        })
+        fake.profile_nodes = [
+            {"__typename": "Repository", "nameWithOwner": "Yolol100/Two"},
+            {"__typename": "Repository", "nameWithOwner": "Yolol100/One"},
+        ]
+        state = ga.profile_pin_state(cfg, runner=fake)
+        self.assertFalse(state["matches"])
+
+    def test_profile_pin_state_detects_gist(self):
+        cfg = self.config()
+        fake = FakeRunner({
+            "Yolol100/One": repo_state(),
+            "Yolol100/Two": repo_state(),
+        })
+        fake.profile_nodes = [
+            {"__typename": "Gist", "name": "example", "url": "https://gist.github.com/example"},
+        ]
+        state = ga.profile_pin_state(cfg, runner=fake)
+        self.assertFalse(state["matches"])
+        self.assertTrue(state["current"][0].startswith("gist:"))
+
     def test_dry_run_has_no_writes(self):
         cfg = self.config()
         fake = FakeRunner({
@@ -162,7 +229,9 @@ class GitHubAdminTests(unittest.TestCase):
 
     def test_topics_are_reconciled_exactly(self):
         cfg = {
+            "schema_version": 1,
             "owner": "Yolol100",
+            "profile": {"desired_pins": ["One"]},
             "repositories": [{
                 "name": "One",
                 "description": "New",
