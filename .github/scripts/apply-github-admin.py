@@ -55,6 +55,18 @@ def validate(cfg):
     if not isinstance(repos, list) or not repos:
         raise ConfigError("repositories must be a non-empty list")
 
+    profile = cfg.get("profile", {})
+    if not isinstance(profile, dict):
+        raise ConfigError("profile must be an object")
+    pins = profile.get("desired_pins", [])
+    if not isinstance(pins, list) or len(pins) > 6:
+        raise ConfigError("profile.desired_pins must be a list with at most six repositories")
+    if len(pins) != len(set(pins)):
+        raise ConfigError("profile.desired_pins contains duplicates")
+    for pin in pins:
+        if not isinstance(pin, str) or not REPO_RE.fullmatch(pin):
+            raise ConfigError(f"Invalid desired profile pin: {pin!r}")
+
     seen = set()
     for item in repos:
         if not isinstance(item, dict):
@@ -205,12 +217,51 @@ def apply_all(cfg, runner=run_gh, dry_run=False):
     return {"dry_run": False, "modified": modified}
 
 
+def profile_pin_state(cfg, runner=run_gh):
+    owner = cfg["owner"]
+    desired = [f"{owner}/{name}" for name in cfg.get("profile", {}).get("desired_pins", [])]
+    query = (
+        "query($login:String!){user(login:$login){"
+        "pinnedItems(first:6){nodes{__typename "
+        "... on Repository{nameWithOwner} "
+        "... on Gist{name url}}}}}"
+    )
+    raw = runner([
+        "api", "graphql",
+        "-f", f"query={query}",
+        "-F", f"login={owner}",
+    ])
+    payload = json.loads(raw)
+    user = payload.get("data", {}).get("user")
+    if not user:
+        raise GhError(f"GitHub GraphQL returned no user for {owner}")
+
+    current = []
+    for node in user.get("pinnedItems", {}).get("nodes", []):
+        if node.get("__typename") == "Repository":
+            current.append(node.get("nameWithOwner"))
+        elif node.get("__typename") == "Gist":
+            current.append(f"gist:{node.get('url') or node.get('name')}")
+        else:
+            current.append(f"unknown:{node.get('__typename')}")
+
+    return {
+        "owner": owner,
+        "desired": desired,
+        "current": current,
+        "matches": current == desired,
+        "write_supported": False,
+        "write_method": "GitHub profile > Customize your pins",
+    }
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("config", help="Path to github-admin.json")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--validate-only", action="store_true")
     mode.add_argument("--dry-run", action="store_true")
+    mode.add_argument("--check-pins", action="store_true")
     return parser.parse_args()
 
 
@@ -223,6 +274,11 @@ def main():
         if args.validate_only:
             print("Configuration valid.")
             return 0
+
+        if args.check_pins:
+            state = profile_pin_state(cfg)
+            print(json.dumps(state, indent=2, sort_keys=True))
+            return 0 if state["matches"] else 2
 
         result = apply_all(cfg, dry_run=args.dry_run)
         if args.dry_run:
