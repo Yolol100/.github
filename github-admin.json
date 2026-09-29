@@ -77,5 +77,14 @@
         "ci"
       ]
     }
-  ]
+  ],
+  "profile": {
+    "desired_pins": [
+      "ACF-Text-Manager",
+      "Content-Sync-Manager",
+      "soocool-for-woocommerce",
+      "Ultracache-pro",
+      "Designchecker"
+    ]
+  }
 }
