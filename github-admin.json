@@ -76,6 +76,46 @@
         "web-testing",
         "ci"
       ]
+    },
+    {
+      "name": "Wordpress",
+      "description": "WordPress media administration plugin for image metadata, CSV import/export, usage scanning and controlled ZIP exports."
+    },
+    {
+      "name": "scan-duplicate-images",
+      "description": "Read-only WordPress media audit for repeated image usage across featured images and ACF fields, with background scanning and CSV export."
+    },
+    {
+      "name": "Woocommerce-egaline-calculator",
+      "description": "WooCommerce material calculator that turns thickness and area into product quantity and pricing while preserving cart, checkout and order data."
+    },
+    {
+      "name": "Dienstenoverzicht",
+      "description": "WordPress service directory with structured content, shortcode-based search and filtering, and controlled CSV import/export."
+    },
+    {
+      "name": "Link",
+      "description": "WordPress internal-linking plugin with HTML-aware keyword mapping, CSV import/export and optional ACF, Elementor and WooCommerce support."
+    },
+    {
+      "name": "Pontifex",
+      "description": "WordPress integration for Pontifex exam planning and registration with SOAP API connectivity, Mollie payments, webhooks and scheduled sync."
+    },
+    {
+      "name": "cursussen-plugin",
+      "description": "WordPress course management plugin with structured course content, responsive shortcode output and a paginated public REST API."
+    },
+    {
+      "name": "Patchrunner",
+      "description": "Guarded WordPress plugin patching with structured packages, exact previews, backups, production gates and rollback."
+    },
+    {
+      "name": "doctorcura-core",
+      "description": "Experimental WordPress/WooCommerce domain plugin for DoctorCura account, verification, checkout, order and request workflows."
+    },
+    {
+      "name": "doctorcura-ui",
+      "description": "Experimental WordPress/WooCommerce presentation plugin for DoctorCura storefront, variations, currency switching and accessible UI components."
     }
   ],
   "profile": {
