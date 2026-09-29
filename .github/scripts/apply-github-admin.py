@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import argparse
 import json
 import os
 import re
@@ -11,10 +12,18 @@ REPO_RE = re.compile(r"^[A-Za-z0-9_.-]+$")
 TOPIC_RE = re.compile(r"^[a-z0-9-]{1,50}$")
 
 
+class ConfigError(ValueError):
+    pass
+
+
+class GhError(RuntimeError):
+    pass
+
+
 def run_gh(args, capture=True):
     env = os.environ.copy()
     if not env.get("GH_TOKEN"):
-        raise SystemExit("GH_TOKEN is required")
+        raise GhError("GH_TOKEN is required for GitHub reads/writes")
     result = subprocess.run(
         ["gh", *args],
         check=False,
@@ -23,30 +32,30 @@ def run_gh(args, capture=True):
         env=env,
     )
     if result.returncode != 0:
-        if result.stdout:
-            print(result.stdout, file=sys.stderr)
-        if result.stderr:
-            print(result.stderr, file=sys.stderr)
-        raise SystemExit(result.returncode)
+        details = (result.stderr or result.stdout or "").strip()
+        raise GhError(details or f"gh command failed with exit code {result.returncode}")
     return result.stdout.strip() if capture else ""
 
 
 def validate(cfg):
     owner = cfg.get("owner")
     if not owner or not OWNER_RE.fullmatch(owner):
-        raise SystemExit("Invalid owner in github-admin.json")
+        raise ConfigError("Invalid owner in github-admin.json")
 
     repos = cfg.get("repositories")
     if not isinstance(repos, list) or not repos:
-        raise SystemExit("repositories must be a non-empty list")
+        raise ConfigError("repositories must be a non-empty list")
 
     seen = set()
     for item in repos:
+        if not isinstance(item, dict):
+            raise ConfigError("Every repository entry must be an object")
+
         name = item.get("name")
         if not name or not REPO_RE.fullmatch(name):
-            raise SystemExit(f"Invalid repository name: {name!r}")
+            raise ConfigError(f"Invalid repository name: {name!r}")
         if name in seen:
-            raise SystemExit(f"Duplicate repository entry: {name}")
+            raise ConfigError(f"Duplicate repository entry: {name}")
         seen.add(name)
 
         description = item.get("description")
@@ -54,79 +63,169 @@ def validate(cfg):
         topics = item.get("topics")
 
         if not isinstance(description, str) or len(description) > 350:
-            raise SystemExit(f"Invalid description for {name}")
+            raise ConfigError(f"Invalid description for {name}")
         if not isinstance(homepage, str) or not homepage.startswith(("https://", "http://")):
-            raise SystemExit(f"Invalid homepage for {name}")
+            raise ConfigError(f"Invalid homepage for {name}")
         if not isinstance(topics, list) or len(topics) > 20:
-            raise SystemExit(f"Invalid topics for {name}")
+            raise ConfigError(f"Invalid topics for {name}")
         if len(topics) != len(set(topics)):
-            raise SystemExit(f"Duplicate topic for {name}")
+            raise ConfigError(f"Duplicate topic for {name}")
         for topic in topics:
             if not isinstance(topic, str) or not TOPIC_RE.fullmatch(topic):
-                raise SystemExit(f"Invalid topic for {name}: {topic!r}")
+                raise ConfigError(f"Invalid topic for {name}: {topic!r}")
+
+    return cfg
 
 
-def apply_repo(owner, item):
-    repo = f"{owner}/{item['name']}"
-    raw = run_gh([
+def normalize_state(raw):
+    return {
+        "description": raw.get("description") or "",
+        "homepage": raw.get("homepageUrl") or "",
+        "topics": sorted(x["name"] for x in raw.get("repositoryTopics", [])),
+    }
+
+
+def desired_state(item):
+    return {
+        "description": item["description"],
+        "homepage": item["homepage"],
+        "topics": sorted(item["topics"]),
+    }
+
+
+def get_repo_state(repo, runner=run_gh):
+    raw = runner([
         "repo", "view", repo,
         "--json", "nameWithOwner,description,homepageUrl,repositoryTopics"
     ])
-    current = json.loads(raw)
-    current_topics = sorted(x["name"] for x in current.get("repositoryTopics", []))
-    desired_topics = sorted(item["topics"])
+    return normalize_state(json.loads(raw))
 
+
+def build_edit_args(repo, current, target):
     args = [
         "repo", "edit", repo,
-        "--description", item["description"],
-        "--homepage", item["homepage"],
+        "--description", target["description"],
+        "--homepage", target["homepage"],
     ]
-
-    for topic in current_topics:
-        if topic not in desired_topics:
+    for topic in current["topics"]:
+        if topic not in target["topics"]:
             args.extend(["--remove-topic", topic])
-    for topic in desired_topics:
-        if topic not in current_topics:
+    for topic in target["topics"]:
+        if topic not in current["topics"]:
             args.extend(["--add-topic", topic])
+    return args
 
-    print(f"Applying {repo}")
-    run_gh(args, capture=False)
 
-    verify_raw = run_gh([
-        "repo", "view", repo,
-        "--json", "nameWithOwner,description,homepageUrl,repositoryTopics"
-    ])
-    verify = json.loads(verify_raw)
-    verify_topics = sorted(x["name"] for x in verify.get("repositoryTopics", []))
+def states_equal(left, right):
+    return left == right
 
-    errors = []
-    if verify.get("description") != item["description"]:
-        errors.append("description")
-    if (verify.get("homepageUrl") or "") != item["homepage"]:
-        errors.append("homepage")
-    if verify_topics != desired_topics:
-        errors.append("topics")
 
-    if errors:
-        raise SystemExit(f"Readback mismatch for {repo}: {', '.join(errors)}")
+def preflight(cfg, runner=run_gh):
+    runner(["auth", "status", "--hostname", "github.com"], capture=False)
+    baseline = {}
+    owner = cfg["owner"]
+    for item in cfg["repositories"]:
+        repo = f"{owner}/{item['name']}"
+        baseline[repo] = get_repo_state(repo, runner)
+    return baseline
 
-    print(f"Verified {repo}")
+
+def apply_all(cfg, runner=run_gh, dry_run=False):
+    baseline = preflight(cfg, runner)
+    owner = cfg["owner"]
+
+    if dry_run:
+        plan = []
+        for item in cfg["repositories"]:
+            repo = f"{owner}/{item['name']}"
+            target = desired_state(item)
+            current = baseline[repo]
+            plan.append({
+                "repo": repo,
+                "change_required": not states_equal(current, target),
+                "current": current,
+                "target": target,
+            })
+        return {"dry_run": True, "plan": plan}
+
+    modified = []
+    rollback_errors = []
+
+    try:
+        for item in cfg["repositories"]:
+            repo = f"{owner}/{item['name']}"
+            target = desired_state(item)
+            baseline_state = baseline[repo]
+
+            fresh = get_repo_state(repo, runner)
+            if not states_equal(fresh, baseline_state):
+                raise GhError(f"State changed after preflight for {repo}; refusing stale write")
+
+            if states_equal(fresh, target):
+                print(f"No change {repo}")
+                continue
+
+            runner(build_edit_args(repo, fresh, target), capture=False)
+            modified.append(repo)
+
+            verify = get_repo_state(repo, runner)
+            if not states_equal(verify, target):
+                raise GhError(f"Readback mismatch for {repo}")
+
+            print(f"Verified {repo}")
+
+    except Exception as original_error:
+        for repo in reversed(modified):
+            try:
+                current = get_repo_state(repo, runner)
+                original = baseline[repo]
+                if not states_equal(current, original):
+                    runner(build_edit_args(repo, current, original), capture=False)
+                restored = get_repo_state(repo, runner)
+                if not states_equal(restored, original):
+                    rollback_errors.append(f"{repo}: readback mismatch")
+            except Exception as rollback_error:
+                rollback_errors.append(f"{repo}: {rollback_error}")
+
+        if rollback_errors:
+            raise GhError(
+                f"{original_error}; rollback incomplete: " + "; ".join(rollback_errors)
+            ) from original_error
+        raise
+
+    return {"dry_run": False, "modified": modified}
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("config", help="Path to github-admin.json")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--validate-only", action="store_true")
+    mode.add_argument("--dry-run", action="store_true")
+    return parser.parse_args()
 
 
 def main():
-    if len(sys.argv) != 2:
-        raise SystemExit("Usage: apply-github-admin.py <config.json>")
+    args = parse_args()
+    try:
+        cfg = json.loads(Path(args.config).read_text(encoding="utf-8"))
+        validate(cfg)
 
-    cfg = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
-    validate(cfg)
+        if args.validate_only:
+            print("Configuration valid.")
+            return 0
 
-    run_gh(["auth", "status", "--hostname", "github.com"], capture=False)
+        result = apply_all(cfg, dry_run=args.dry_run)
+        if args.dry_run:
+            print(json.dumps(result, indent=2, sort_keys=True))
+        else:
+            print("All configured repositories applied and verified.")
+        return 0
 
-    for item in cfg["repositories"]:
-        apply_repo(cfg["owner"], item)
-
-    print("All configured repositories applied and verified.")
+    except (ConfigError, GhError, json.JSONDecodeError, OSError) as error:
+        print(str(error), file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
