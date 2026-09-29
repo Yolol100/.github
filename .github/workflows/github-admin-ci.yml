@@ -39,3 +39,20 @@ jobs:
 
       - name: Run scenario tests
         run: python3 -m unittest discover -s .github/tests -p 'test_*.py' -v
+
+
+      - name: Audit current profile pins
+        id: pins
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          python3 .github/scripts/apply-github-admin.py github-admin.json --check-pins > pins-status.json
+          status=$?
+          cat pins-status.json
+          if [ "$status" -eq 2 ]; then
+            echo "::warning::Current GitHub profile pins do not match github-admin.json. Change them via Profile > Customize your pins."
+            exit 0
+          fi
+          exit "$status"
