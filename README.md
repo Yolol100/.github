@@ -16,7 +16,7 @@ Privérepositories erven deze bestanden niet automatisch en moeten ze expliciet 
 
 ## GitHub admin control
 
-- [`github-admin.json`](github-admin.json) is the source of truth for repository descriptions, homepage URLs and topics that ChatGPT may safely maintain through the existing GitHub connector.
+- [`github-admin.json`](github-admin.json) is the source of truth for repository descriptions, homepage URLs and topics that ChatGPT may safely maintain through the existing GitHub connector. Each repository entry can manage only the fields it declares, so description-only portfolio updates do not overwrite an existing homepage or topics.
 - [`.github/workflows/github-admin.yml`](.github/workflows/github-admin.yml) applies config changes automatically. It validates first, previews the diff, applies only required changes, reads every result back and rolls back earlier writes when a later repository fails.
 - [`.github/workflows/github-admin-ci.yml`](.github/workflows/github-admin-ci.yml) runs syntax, config and scenario tests without privileged credentials and audits the current public profile pins against the desired order in `github-admin.json`.
 - [`.github/scripts/apply-github-admin.py`](.github/scripts/apply-github-admin.py) rejects malformed config, refuses stale writes after preflight and locks the config owner to the GitHub account that owns this control repository.
