@@ -1,35 +1,81 @@
 {
+  "schema_version": 1,
   "owner": "Yolol100",
   "repositories": [
     {
       "name": "ACF-Text-Manager",
       "description": "WordPress admin tooling for ACF, SEO metadata and guarded CSV/XLSX content workflows.",
       "homepage": "https://andrewbaeten.nl/category/cases",
-      "topics": ["wordpress", "php", "acf", "seo", "content-management", "csv", "xlsx", "wordpress-plugin"]
+      "topics": [
+        "wordpress",
+        "php",
+        "acf",
+        "seo",
+        "content-management",
+        "csv",
+        "xlsx",
+        "wordpress-plugin"
+      ]
     },
     {
       "name": "Content-Sync-Manager",
       "description": "Controlled WordPress content and media import/export with ACF, WooCommerce, validation and recovery.",
       "homepage": "https://andrewbaeten.nl/category/cases",
-      "topics": ["wordpress", "php", "woocommerce", "acf", "content-management", "media", "import-export", "wordpress-plugin"]
+      "topics": [
+        "wordpress",
+        "php",
+        "woocommerce",
+        "acf",
+        "content-management",
+        "media",
+        "import-export",
+        "wordpress-plugin"
+      ]
     },
     {
       "name": "soocool-for-woocommerce",
       "description": "WooCommerce transport API integration with HPOS, webhooks, background jobs and guarded order workflows.",
       "homepage": "https://andrewbaeten.nl/category/cases",
-      "topics": ["wordpress", "woocommerce", "php", "rest-api", "webhooks", "hpos", "ecommerce", "wordpress-plugin"]
+      "topics": [
+        "wordpress",
+        "woocommerce",
+        "php",
+        "rest-api",
+        "webhooks",
+        "hpos",
+        "ecommerce",
+        "wordpress-plugin"
+      ]
     },
     {
       "name": "Ultracache-pro",
       "description": "WordPress performance and caching plugin with WooCommerce safeguards and frontend optimization.",
       "homepage": "https://andrewbaeten.nl/category/cases",
-      "topics": ["wordpress", "php", "performance", "caching", "core-web-vitals", "woocommerce", "web-performance", "wordpress-plugin"]
+      "topics": [
+        "wordpress",
+        "php",
+        "performance",
+        "caching",
+        "core-web-vitals",
+        "woocommerce",
+        "web-performance",
+        "wordpress-plugin"
+      ]
     },
     {
       "name": "Designchecker",
       "description": "Read-only website QA for browser behaviour, accessibility, performance and visual regression.",
       "homepage": "https://andrewbaeten.nl/category/cases",
-      "topics": ["typescript", "playwright", "accessibility", "lighthouse", "visual-regression", "quality-assurance", "web-testing", "ci"]
+      "topics": [
+        "typescript",
+        "playwright",
+        "accessibility",
+        "lighthouse",
+        "visual-regression",
+        "quality-assurance",
+        "web-testing",
+        "ci"
+      ]
     }
   ]
 }
