@@ -118,6 +118,20 @@ class GitHubAdminTests(unittest.TestCase):
         cfg = self.config()
         self.assertEqual(ga.validate(cfg), cfg)
 
+    def test_validate_accepts_description_only_entry(self):
+        cfg = self.config()
+        cfg["repositories"][0] = {
+            "name": "One",
+            "description": "Description only",
+        }
+        self.assertEqual(ga.validate(cfg), cfg)
+
+    def test_validate_rejects_entry_without_managed_fields(self):
+        cfg = self.config()
+        cfg["repositories"][0] = {"name": "One"}
+        with self.assertRaises(ga.ConfigError):
+            ga.validate(cfg)
+
     def test_validate_rejects_workflow_owner_mismatch(self):
         cfg = self.config()
         with patch.dict(ga.os.environ, {"GITHUB_REPOSITORY_OWNER": "OtherOwner"}, clear=False):
@@ -226,6 +240,38 @@ class GitHubAdminTests(unittest.TestCase):
         result = ga.apply_all(cfg, runner=fake)
         self.assertEqual(result["modified"], [])
         self.assertEqual(fake.edit_calls, [])
+
+    def test_description_only_preserves_unmanaged_metadata(self):
+        cfg = {
+            "schema_version": 1,
+            "owner": "Yolol100",
+            "profile": {"desired_pins": ["One"]},
+            "repositories": [{
+                "name": "One",
+                "description": "New description",
+            }],
+        }
+        original = repo_state(
+            "Old description",
+            "https://keep.example",
+            ["keep", "untouched"],
+        )
+        fake = FakeRunner({"Yolol100/One": original})
+        ga.apply_all(cfg, runner=fake)
+
+        self.assertEqual(
+            fake.states["Yolol100/One"],
+            repo_state(
+                "New description",
+                "https://keep.example",
+                ["keep", "untouched"],
+            ),
+        )
+        args = fake.edit_calls[0]
+        self.assertIn("--description", args)
+        self.assertNotIn("--homepage", args)
+        self.assertNotIn("--add-topic", args)
+        self.assertNotIn("--remove-topic", args)
 
     def test_topics_are_reconciled_exactly(self):
         cfg = {
