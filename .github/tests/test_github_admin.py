@@ -98,7 +98,8 @@ class GitHubAdminTests(unittest.TestCase):
         }
 
     def test_validate_accepts_valid_config(self):
-        cfg = self.config()\n        self.assertEqual(ga.validate(cfg), cfg)
+        cfg = self.config()
+        self.assertEqual(ga.validate(cfg), cfg)
 
     def test_validate_rejects_duplicate_repo(self):
         cfg = self.config()
