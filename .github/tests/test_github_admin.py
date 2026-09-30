@@ -27,10 +27,14 @@ class FakeRunner:
         self.fail_view_repo = None
         self.mutate_on_second_view = None
         self.profile_nodes = []
+        self.live_repo_names = sorted(repo.split('/', 1)[1] for repo in states)
 
     def __call__(self, args, capture=True):
         if args[:2] == ["auth", "status"]:
             return ""
+
+        if args[:3] == ["repo", "list", "Yolol100"]:
+            return json.dumps([{"name": name} for name in self.live_repo_names])
 
         if args[:2] == ["repo", "view"]:
             repo = args[2]
@@ -236,6 +240,39 @@ class GitHubAdminTests(unittest.TestCase):
         state = ga.profile_pin_state(cfg, runner=fake)
         self.assertFalse(state["matches"])
         self.assertTrue(state["current"][0].startswith("gist:"))
+
+    def test_repository_inventory_matches_exact_config(self):
+        cfg = self.config()
+        fake = FakeRunner({
+            "Yolol100/One": repo_state(),
+            "Yolol100/Two": repo_state(),
+        })
+        state = ga.repository_inventory_state(cfg, runner=fake)
+        self.assertTrue(state["matches"])
+        self.assertEqual(state["missing_from_config"], [])
+        self.assertEqual(state["missing_from_github"], [])
+
+    def test_repository_inventory_detects_unconfigured_live_repo(self):
+        cfg = self.config()
+        fake = FakeRunner({
+            "Yolol100/One": repo_state(),
+            "Yolol100/Two": repo_state(),
+            "Yolol100/Three": repo_state(),
+        })
+        state = ga.repository_inventory_state(cfg, runner=fake)
+        self.assertFalse(state["matches"])
+        self.assertEqual(state["missing_from_config"], ["Three"])
+        self.assertEqual(state["missing_from_github"], [])
+
+    def test_repository_inventory_detects_stale_config_repo(self):
+        cfg = self.config()
+        fake = FakeRunner({
+            "Yolol100/One": repo_state(),
+        })
+        state = ga.repository_inventory_state(cfg, runner=fake)
+        self.assertFalse(state["matches"])
+        self.assertEqual(state["missing_from_config"], [])
+        self.assertEqual(state["missing_from_github"], ["Two"])
 
     def test_repository_drift_state_matches_exact_state(self):
         cfg = self.config()
