@@ -54,6 +54,11 @@ jobs:
           GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
         run: python3 .github/scripts/apply-github-admin.py github-admin.json --check-repositories
 
+      - name: Audit repository governance
+        env:
+          GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
+        run: python3 .github/scripts/audit-github-governance.py github-admin.json --output governance-audit.json
+
 
       - name: Validate public default-branch safety
         run: python3 .github/scripts/apply-github-branch-safety.py github-admin.json --validate-only
