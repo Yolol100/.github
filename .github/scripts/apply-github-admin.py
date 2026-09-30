@@ -108,6 +108,13 @@ def validate(cfg):
                 if not isinstance(topic, str) or not TOPIC_RE.fullmatch(topic):
                     raise ConfigError(f"Invalid topic for {name}: {topic!r}")
 
+    missing_pins = [pin for pin in pins if pin not in seen]
+    if missing_pins:
+        raise ConfigError(
+            "profile.desired_pins must reference configured repositories: "
+            + ", ".join(missing_pins)
+        )
+
     return cfg
 
 
