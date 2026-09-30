@@ -32,7 +32,7 @@ jobs:
         run: |
           if [ -z "$TH_ADMIN_TOKEN" ]; then
             echo "::error::Missing repository secret TH_ADMIN_TOKEN."
-            echo "::error::Use a dedicated fine-grained PAT with Administration: write access only to the repositories listed in github-admin.json."
+            echo "::error::Use a dedicated fine-grained PAT with All repositories access and Administration: read/write; this workflow writes only repositories declared in github-admin.json."
             exit 1
           fi
 
