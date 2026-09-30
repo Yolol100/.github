@@ -18,7 +18,7 @@ concurrency:
 jobs:
   apply:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
@@ -53,3 +53,27 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
         run: python3 .github/scripts/apply-github-admin.py github-admin.json --check-repositories
+
+
+      - name: Validate public default-branch safety
+        run: python3 .github/scripts/apply-github-branch-safety.py github-admin.json --validate-only
+
+      - name: Preview public default-branch safety
+        env:
+          GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
+        run: python3 .github/scripts/apply-github-branch-safety.py github-admin.json --dry-run
+
+      - name: Apply and verify public default-branch safety
+        env:
+          GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
+        run: python3 .github/scripts/apply-github-branch-safety.py github-admin.json
+
+      - name: Verify public default-branch safety drift
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/apply-github-branch-safety.py github-admin.json --dry-run > branch-safety-status.json
+          cat branch-safety-status.json
+          jq -e 'all(.plan[]; .action != "create")' branch-safety-status.json >/dev/null
