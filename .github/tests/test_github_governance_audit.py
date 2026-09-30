@@ -13,6 +13,8 @@ class GovernanceAuditTests(unittest.TestCase):
         self.assertEqual(
             ga.protection_summary(None),
             {
+                "access": "available",
+                "access_error": "",
                 "protected": False,
                 "pull_request_reviews": False,
                 "required_status_checks": [],
@@ -36,6 +38,7 @@ class GovernanceAuditTests(unittest.TestCase):
             "enforce_admins": {"enabled": True},
         }
         state = ga.protection_summary(raw)
+        self.assertEqual(state["access"], "available")
         self.assertTrue(state["protected"])
         self.assertTrue(state["pull_request_reviews"])
         self.assertEqual(state["required_status_checks"], ["security", "validate"])
@@ -43,6 +46,12 @@ class GovernanceAuditTests(unittest.TestCase):
         self.assertFalse(state["force_pushes_allowed"])
         self.assertFalse(state["deletions_allowed"])
         self.assertTrue(state["enforce_admins"])
+
+    def test_blocked_protection_summary(self):
+        state = ga.protection_summary({"_access_error": "HTTP 403"})
+        self.assertEqual(state["access"], "blocked")
+        self.assertIsNone(state["protected"])
+        self.assertIn("403", state["access_error"])
 
     def test_security_summary_handles_missing_fields(self):
         state = ga.security_summary({})
@@ -63,6 +72,8 @@ class GovernanceAuditTests(unittest.TestCase):
                 "visibility": "public",
                 "archived": False,
                 "default_branch": "main",
+                "rulesets_access": "available",
+                "rulesets_error": "",
                 "rulesets_total": 1 if name == "One" else 0,
                 "active_rulesets": ["Protect main"] if name == "One" else [],
                 "protection": {
