@@ -116,6 +116,30 @@
     {
       "name": "doctorcura-ui",
       "description": "Experimental WordPress/WooCommerce presentation plugin for DoctorCura storefront, variations, currency switching and accessible UI components."
+    },
+    {
+      "name": "translatewordpress",
+      "description": "Review-first WordPress translation plugin with Elementor, ACF and WooCommerce support, CSV/XLIFF workflows, SEO integration and optional AI assistance."
+    },
+    {
+      "name": "shutterstock-seo-",
+      "description": "WordPress workflow for searching, reviewing, licensing and attaching Shutterstock images to ACF fields with OAuth and guarded media handling."
+    },
+    {
+      "name": "acf-image-auto-filler",
+      "description": "WordPress admin plugin for mapping Media Library images to ACF and featured-image fields with preview, batch processing, rollback and audit logging."
+    },
+    {
+      "name": "MDTPullMarker",
+      "description": "WoW Retail add-on that turns Mythic Dungeon Tools route targets into validated pull-aware marker plans and guarded smart macros."
+    },
+    {
+      "name": "KeystoneLens",
+      "description": "WoW Retail add-on and Windows companion for Warcraft Logs Mythic+ percentile tooltips and applicant lookups with validated local preload data."
+    },
+    {
+      "name": "RaidLeadAssist",
+      "description": "WoW Retail raid-leader add-on for per-boss Heroic/Mythic macros, tactics and encounter-aware timing guidance with combat-safe updates."
     }
   ],
   "profile": {
