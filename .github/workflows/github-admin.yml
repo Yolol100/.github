@@ -82,3 +82,26 @@ jobs:
           python3 .github/scripts/apply-github-branch-safety.py github-admin.json --dry-run > branch-safety-status.json
           cat branch-safety-status.json
           jq -e 'all(.plan[]; .action != "create")' branch-safety-status.json >/dev/null
+
+      - name: Validate public repository security
+        run: python3 .github/scripts/apply-github-public-security.py github-admin.json --validate-only
+
+      - name: Preview public repository security
+        env:
+          GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
+        run: python3 .github/scripts/apply-github-public-security.py github-admin.json --dry-run
+
+      - name: Apply and verify public repository security
+        env:
+          GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
+        run: python3 .github/scripts/apply-github-public-security.py github-admin.json
+
+      - name: Verify public repository security drift
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/apply-github-public-security.py github-admin.json --dry-run > public-security-status.json
+          cat public-security-status.json
+          jq -e 'all(.plan[]; .action != "enable")' public-security-status.json >/dev/null
