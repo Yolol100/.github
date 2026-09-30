@@ -20,11 +20,12 @@ Privérepositories erven deze bestanden niet automatisch en moeten ze expliciet 
 - [`.github/workflows/github-admin.yml`](.github/workflows/github-admin.yml) applies config changes automatically. It validates first, previews the diff, applies only required changes, reads every result back, rolls back earlier writes when a later repository fails, and finishes with a read-only full drift check.
 - [`.github/workflows/github-admin-ci.yml`](.github/workflows/github-admin-ci.yml) runs syntax, config and scenario tests without privileged credentials and audits the current public profile pins against the desired order in `github-admin.json`.
 - [`.github/scripts/apply-github-admin.py`](.github/scripts/apply-github-admin.py) rejects malformed config, verifies desired pins reference managed repositories, refuses stale writes after preflight, supports read-only metadata drift checks, and locks the config owner to the GitHub account that owns this control repository.
+- [`.github/scripts/apply-github-branch-safety.py`](.github/scripts/apply-github-branch-safety.py) keeps public default branches protected against deletion and non-fast-forward/force-push without forcing a pull-request-only workflow. Existing conflicting rulesets fail closed; partial newly created rulesets are rolled back on failure. Private repositories are skipped because the current account plan/API does not expose repository rulesets for them.
 - External Actions are pinned to an immutable commit SHA and checkout credentials are not persisted.
 
 ### One-time credential setup
 
-The apply workflow requires a repository secret named `TH_ADMIN_TOKEN`. Use a **dedicated fine-grained personal access token** with **All repositories** access and repository permission **Administration: write** when you want this control repository to manage current and future repositories on the account. Do not reuse or pipe the broad OAuth token from `gh auth token` into this secret.
+The apply workflow requires a repository secret named `TH_ADMIN_TOKEN`. Use a **dedicated fine-grained personal access token** with **All repositories** access and repository permission **Administration: write** when you want this control repository to manage current and future repositories on the account. The same permission is used to maintain the minimal public default-branch ruleset. Do not reuse or pipe the broad OAuth token from `gh auth token` into this secret.
 
 Create the fine-grained token in GitHub account settings, then store that token as the `TH_ADMIN_TOKEN` Actions secret on `Yolol100/.github`. The workflow maps `TH_ADMIN_TOKEN` to `GH_TOKEN` only inside the apply steps. The token is consumed only by the apply job and is never committed to this repository.
 
