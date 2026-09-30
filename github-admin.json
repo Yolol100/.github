@@ -340,10 +340,13 @@
         "wordpress",
         "woocommerce",
         "php",
-        "automation",
+        "web-development",
         "quality-assurance",
-        "portfolio"
-      ]
+        "automation",
+        "portfolio",
+        "github-profile"
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": ".github",
