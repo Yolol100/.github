@@ -294,7 +294,8 @@
     },
     {
       "name": "seochecker",
-      "description": "Reproducible technical SEO audits with bounded crawling, HTML/Lighthouse checks, rendered evidence and regression comparison."
+      "description": "Reproducible technical SEO audits with bounded crawling, HTML/Lighthouse checks, rendered evidence and regression comparison.",
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "Checklist",
@@ -316,11 +317,13 @@
         "automation",
         "woocommerce",
         "acf"
-      ]
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "Orchestrator",
-      "description": "Controlled multi-repository GitHub transport with least-privilege app tokens, explicit dependencies, reproducible requests and auditable artifacts."
+      "description": "Controlled multi-repository GitHub transport with least-privilege app tokens, explicit dependencies, reproducible requests and auditable artifacts.",
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "vacature-engine",
