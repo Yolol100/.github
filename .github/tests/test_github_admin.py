@@ -114,6 +114,17 @@ class GitHubAdminTests(unittest.TestCase):
             ],
         }
 
+    def test_normalize_state_handles_null_topics(self):
+        raw = {
+            "description": None,
+            "homepageUrl": None,
+            "repositoryTopics": None,
+        }
+        self.assertEqual(
+            ga.normalize_state(raw),
+            {"description": "", "homepage": "", "topics": []},
+        )
+
     def test_validate_accepts_valid_config(self):
         cfg = self.config()
         self.assertEqual(ga.validate(cfg), cfg)
