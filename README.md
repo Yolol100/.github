@@ -23,6 +23,15 @@ Privérepositories erven deze bestanden niet automatisch en moeten ze expliciet 
 - [`.github/scripts/apply-github-branch-safety.py`](.github/scripts/apply-github-branch-safety.py) keeps public default branches protected against deletion and non-fast-forward/force-push without forcing a pull-request-only workflow. Existing conflicting rulesets fail closed; partial newly created rulesets are rolled back on failure. Private repositories are skipped because the current account plan/API does not expose repository rulesets for them.
 - External Actions are pinned to an immutable commit SHA and checkout credentials are not persisted.
 
+- The control plane now also performs a read-only governance inventory across all configured repositories, distinguishing effective default-branch protection from classic branch-protection details that may be unavailable on private repositories.
+- Public repositories receive a minimal `Protect main` ruleset that blocks branch deletion and non-fast-forward/force-push changes without changing the existing direct-to-`main` workflow into a mandatory pull-request workflow.
+- Public repositories are checked for GitHub secret scanning and push protection; when those features are available but disabled, the admin workflow enables them and verifies the resulting state.
+
+### Public repository security baseline
+
+The baseline is deliberately narrow and evidence-driven. It does not claim that every repository has mandatory pull requests, required status checks, code scanning or identical dependency tooling. Those controls depend on the repository's actual CI, visibility, licensing/plan support and release model. Unsupported private-repository protection reads are recorded as blocked/unknown rather than treated as an unprotected repository.
+
+
 ### One-time credential setup
 
 The apply workflow requires a repository secret named `TH_ADMIN_TOKEN`. Use a **dedicated fine-grained personal access token** with **All repositories** access and repository permission **Administration: write** when you want this control repository to manage current and future repositories on the account. The same permission is used to maintain the minimal public default-branch ruleset. Do not reuse or pipe the broad OAuth token from `gh auth token` into this secret.
