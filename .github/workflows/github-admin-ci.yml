@@ -7,8 +7,10 @@ on:
     paths:
       - github-admin.json
       - .github/scripts/apply-github-admin.py
+      - .github/scripts/audit-github-governance.py
       - .github/scripts/apply-github-branch-safety.py
       - .github/tests/test_github_admin.py
+      - .github/tests/test_github_governance_audit.py
       - .github/tests/test_github_branch_safety.py
       - .github/workflows/github-admin.yml
       - .github/workflows/github-admin-ci.yml
@@ -16,8 +18,10 @@ on:
     paths:
       - github-admin.json
       - .github/scripts/apply-github-admin.py
+      - .github/scripts/audit-github-governance.py
       - .github/scripts/apply-github-branch-safety.py
       - .github/tests/test_github_admin.py
+      - .github/tests/test_github_governance_audit.py
       - .github/tests/test_github_branch_safety.py
       - .github/workflows/github-admin.yml
       - .github/workflows/github-admin-ci.yml
