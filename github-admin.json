@@ -93,7 +93,8 @@
         "csv",
         "quality-assurance",
         "wordpress-plugin"
-      ]
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "Woocommerce-egaline-calculator",
@@ -256,7 +257,8 @@
     },
     {
       "name": "KeystoneLens",
-      "description": "WoW Retail add-on and Windows companion for Warcraft Logs Mythic+ percentile tooltips and applicant lookups with validated local preload data."
+      "description": "WoW Retail add-on and Windows companion for Warcraft Logs Mythic+ percentile tooltips and applicant lookups with validated local preload data.",
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "RaidLeadAssist",
