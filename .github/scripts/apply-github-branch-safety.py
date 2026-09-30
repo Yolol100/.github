@@ -123,6 +123,15 @@ def create_ruleset(owner, name, runner=run_gh):
     )
 
 
+def delete_ruleset(owner, name, ruleset_id, runner=run_gh):
+    api_json(
+        f"repos/{owner}/{name}/rulesets/{ruleset_id}",
+        method="DELETE",
+        payload=None,
+        runner=runner,
+    )
+
+
 def plan(cfg, runner=run_gh):
     owner = cfg["owner"]
     items = []
@@ -164,18 +173,41 @@ def apply(cfg, dry_run=False, runner=run_gh):
 
     owner = cfg["owner"]
     created = []
-    for item in items:
-        if item["action"] != "create":
-            continue
-        name = item["repo"].split("/", 1)[1]
-        result = create_ruleset(owner, name, runner=runner)
-        ruleset_id = result.get("id")
-        if not ruleset_id:
-            raise BranchSafetyError(f"Ruleset creation returned no id for {item['repo']}")
-        verify = get_ruleset(owner, name, ruleset_id, runner=runner)
-        if not ruleset_matches(verify):
-            raise BranchSafetyError(f"Ruleset readback mismatch for {item['repo']}")
-        created.append({"repo": item["repo"], "ruleset_id": ruleset_id})
+    rollback_errors = []
+
+    try:
+        for item in items:
+            if item["action"] != "create":
+                continue
+            name = item["repo"].split("/", 1)[1]
+            result = create_ruleset(owner, name, runner=runner)
+            ruleset_id = result.get("id")
+            if not ruleset_id:
+                raise BranchSafetyError(f"Ruleset creation returned no id for {item['repo']}")
+            created.append({"repo": item["repo"], "ruleset_id": ruleset_id})
+
+            verify = get_ruleset(owner, name, ruleset_id, runner=runner)
+            if not ruleset_matches(verify):
+                raise BranchSafetyError(f"Ruleset readback mismatch for {item['repo']}")
+    except Exception as original_error:
+        for created_item in reversed(created):
+            repo = created_item["repo"]
+            name = repo.split("/", 1)[1]
+            ruleset_id = created_item["ruleset_id"]
+            try:
+                delete_ruleset(owner, name, ruleset_id, runner=runner)
+                remaining = list_rulesets(owner, name, runner=runner)
+                if any(item.get("id") == ruleset_id for item in remaining):
+                    rollback_errors.append(f"{repo}: ruleset {ruleset_id} still present")
+            except Exception as rollback_error:
+                rollback_errors.append(f"{repo}: {rollback_error}")
+
+        if rollback_errors:
+            raise BranchSafetyError(
+                f"{original_error}; rollback incomplete: " + "; ".join(rollback_errors)
+            ) from original_error
+        raise
+
     return {"dry_run": False, "created": created, "plan": items}
 
 
