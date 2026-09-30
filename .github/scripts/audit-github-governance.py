@@ -116,7 +116,15 @@ def audit_repository(owner, name, runner=run_gh):
     metadata = api_json(f"repos/{repo}", runner) or {}
     default_branch = metadata.get("default_branch") or "main"
 
-    branch = api_json(f"repos/{repo}/branches/{default_branch}", runner) or {}
+    branch_raw = optional_api_json(f"repos/{repo}/branches/{default_branch}", runner)
+    branch_access = "available"
+    branch_error = ""
+    if isinstance(branch_raw, dict) and branch_raw.get("_access_error"):
+        branch_access = "blocked"
+        branch_error = branch_raw["_access_error"]
+        branch = {}
+    else:
+        branch = branch_raw or {}
     protection = optional_api_json(
         f"repos/{repo}/branches/{default_branch}/protection",
         runner,
@@ -146,7 +154,9 @@ def audit_repository(owner, name, runner=run_gh):
             for r in rulesets
             if isinstance(r, dict) and r.get("enforcement") == "active"
         ),
-        "default_branch_protected": bool(branch.get("protected")),
+        "default_branch_access": branch_access,
+        "default_branch_error": branch_error,
+        "default_branch_protected": None if branch_access == "blocked" else bool(branch.get("protected")),
         "classic_protection": protection_summary(protection),
         "security": security_summary(metadata),
     }
@@ -163,10 +173,13 @@ def build_report(cfg, runner=run_gh):
     summary = {
         "repository_count": len(repositories),
         "protected_count": sum(
-            1 for r in repositories if r["default_branch_protected"]
+            1 for r in repositories if r["default_branch_protected"] is True
         ),
         "unprotected": [
-            r["repo"] for r in repositories if not r["default_branch_protected"]
+            r["repo"] for r in repositories if r["default_branch_protected"] is False
+        ],
+        "default_branch_unavailable": [
+            r["repo"] for r in repositories if r["default_branch_protected"] is None
         ],
         "classic_protection_unavailable": [
             r["repo"]
