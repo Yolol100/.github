@@ -7,6 +7,8 @@ on:
     paths:
       - github-admin.json
   workflow_dispatch:
+  schedule:
+    - cron: '17 3 * * *'
 
 permissions:
   contents: read
@@ -35,6 +37,20 @@ jobs:
             echo "::error::Use a dedicated fine-grained PAT with All repositories access and Administration: read/write; this workflow writes only repositories declared in github-admin.json."
             exit 1
           fi
+
+      - name: Verify repository inventory coverage
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh repo list "$GITHUB_REPOSITORY_OWNER" --limit 1000 --json name --jq '.[].name' | LC_ALL=C sort > live-repositories.txt
+          jq -r '.repositories[].name' github-admin.json | LC_ALL=C sort > configured-repositories.txt
+          if ! diff -u configured-repositories.txt live-repositories.txt; then
+            echo "::error::github-admin.json must cover every repository owned by $GITHUB_REPOSITORY_OWNER."
+            exit 1
+          fi
+          echo "Repository inventory coverage verified."
 
       - name: Validate configuration
         run: python3 .github/scripts/apply-github-admin.py github-admin.json --validate-only
