@@ -28,10 +28,10 @@ jobs:
       - name: Check GitHub admin token
         shell: bash
         env:
-          GH_ADMIN_TOKEN: ${{ secrets.GH_ADMIN_TOKEN }}
+          TH_ADMIN_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
         run: |
-          if [ -z "$GH_ADMIN_TOKEN" ]; then
-            echo "::error::Missing repository secret GH_ADMIN_TOKEN."
+          if [ -z "$TH_ADMIN_TOKEN" ]; then
+            echo "::error::Missing repository secret TH_ADMIN_TOKEN."
             echo "::error::Use a dedicated fine-grained PAT with Administration: write access only to the repositories listed in github-admin.json."
             exit 1
           fi
@@ -41,10 +41,10 @@ jobs:
 
       - name: Preview changes
         env:
-          GH_TOKEN: ${{ secrets.GH_ADMIN_TOKEN }}
+          GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
         run: python3 .github/scripts/apply-github-admin.py github-admin.json --dry-run
 
       - name: Apply and verify repository metadata
         env:
-          GH_TOKEN: ${{ secrets.GH_ADMIN_TOKEN }}
+          GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
         run: python3 .github/scripts/apply-github-admin.py github-admin.json
