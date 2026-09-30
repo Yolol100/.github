@@ -140,6 +140,42 @@
     {
       "name": "RaidLeadAssist",
       "description": "WoW Retail raid-leader add-on for per-boss Heroic/Mythic macros, tactics and encounter-aware timing guidance with combat-safe updates."
+    },
+    {
+      "name": "Leadscanner",
+      "description": "Controlled B2B lead workflow for public-source discovery, evidence-bound contact verification and human-reviewed outreach drafts."
+    },
+    {
+      "name": "programmeren",
+      "description": "Repository-native WordPress plugin audit harness with coding standards, security scanning, runtime checks, SBOM evidence and reproducible packaging."
+    },
+    {
+      "name": "elementorjson",
+      "description": "Private controlled Elementor JSON QA runtime for validation, import/round-trip checks, responsive rendering and browser evidence."
+    },
+    {
+      "name": "seochecker",
+      "description": "Reproducible technical SEO audits with bounded crawling, HTML/Lighthouse checks, rendered evidence and regression comparison."
+    },
+    {
+      "name": "Checklist",
+      "description": "Rollback-only legacy QA runner retained as a migration fallback; active read-only website QA runs through Designchecker."
+    },
+    {
+      "name": "transcriberen",
+      "description": "Controlled YouTube caption and comment acquisition runtime with bounded concurrency, deterministic artifacts and hosted/self-hosted fallback."
+    },
+    {
+      "name": "wordpressconnector",
+      "description": "Controlled WordPress automation bridge with GitHub OIDC, capability-gated REST actions, readback, rollback and zero-config site execution."
+    },
+    {
+      "name": "Orchestrator",
+      "description": "Controlled multi-repository GitHub transport with least-privilege app tokens, explicit dependencies, reproducible requests and auditable artifacts."
+    },
+    {
+      "name": "vacature-engine",
+      "description": "Deterministic vacancy filtering and ranking engine with structured JobPosting normalization, isolated ingestion and reproducible decision contracts."
     }
   ],
   "profile": {
