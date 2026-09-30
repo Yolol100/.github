@@ -39,12 +39,29 @@ def optional_api_json(path, runner=run_gh):
         message = str(exc)
         if "HTTP 404" in message or "Not Found" in message:
             return None
+        if "HTTP 403" in message or "Resource not accessible" in message or "Upgrade to GitHub Pro" in message:
+            return {"_access_error": message}
         raise
 
 
 def protection_summary(raw):
+    if isinstance(raw, dict) and raw.get("_access_error"):
+        return {
+            "access": "blocked",
+            "access_error": raw["_access_error"],
+            "protected": None,
+            "pull_request_reviews": None,
+            "required_status_checks": [],
+            "conversation_resolution": None,
+            "force_pushes_allowed": None,
+            "deletions_allowed": None,
+            "enforce_admins": None,
+        }
+
     if not raw:
         return {
+            "access": "available",
+            "access_error": "",
             "protected": False,
             "pull_request_reviews": False,
             "required_status_checks": [],
@@ -63,6 +80,8 @@ def protection_summary(raw):
     ]
 
     return {
+        "access": "available",
+        "access_error": "",
         "protected": True,
         "pull_request_reviews": bool(raw.get("required_pull_request_reviews")),
         "required_status_checks": sorted(set(contexts + named_checks)),
@@ -101,8 +120,16 @@ def audit_repository(owner, name, runner=run_gh):
         f"repos/{repo}/branches/{default_branch}/protection",
         runner,
     )
-    rulesets = optional_api_json(f"repos/{repo}/rulesets", runner)
-    if not isinstance(rulesets, list):
+    rulesets_raw = optional_api_json(f"repos/{repo}/rulesets", runner)
+    rulesets_access = "available"
+    rulesets_error = ""
+    if isinstance(rulesets_raw, dict) and rulesets_raw.get("_access_error"):
+        rulesets_access = "blocked"
+        rulesets_error = rulesets_raw["_access_error"]
+        rulesets = []
+    elif isinstance(rulesets_raw, list):
+        rulesets = rulesets_raw
+    else:
         rulesets = []
 
     result = {
@@ -110,6 +137,8 @@ def audit_repository(owner, name, runner=run_gh):
         "visibility": metadata.get("visibility"),
         "archived": bool(metadata.get("archived")),
         "default_branch": default_branch,
+        "rulesets_access": rulesets_access,
+        "rulesets_error": rulesets_error,
         "rulesets_total": len(rulesets),
         "active_rulesets": sorted(
             r.get("name", "")
@@ -132,10 +161,13 @@ def build_report(cfg, runner=run_gh):
     summary = {
         "repository_count": len(repositories),
         "protected_count": sum(
-            1 for r in repositories if r["protection"]["protected"]
+            1 for r in repositories if r["protection"]["protected"] is True
         ),
         "unprotected": [
-            r["repo"] for r in repositories if not r["protection"]["protected"]
+            r["repo"] for r in repositories if r["protection"]["protected"] is False
+        ],
+        "protection_unavailable": [
+            r["repo"] for r in repositories if r["protection"]["protected"] is None
         ],
         "with_active_rulesets": [
             r["repo"] for r in repositories if r["active_rulesets"]
