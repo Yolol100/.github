@@ -189,6 +189,38 @@ def preflight(cfg, runner=run_gh):
     return baseline
 
 
+
+def repository_inventory_state(cfg, runner=run_gh):
+    owner = cfg["owner"]
+    raw = runner([
+        "repo", "list", owner,
+        "--limit", "1000",
+        "--json", "name",
+    ])
+    payload = json.loads(raw)
+    if not isinstance(payload, list):
+        raise GhError("GitHub repository inventory response must be a list")
+
+    live = sorted(
+        item.get("name")
+        for item in payload
+        if isinstance(item, dict) and isinstance(item.get("name"), str) and item.get("name")
+    )
+    configured = sorted(item["name"] for item in cfg["repositories"])
+    missing_from_config = sorted(set(live) - set(configured))
+    missing_from_github = sorted(set(configured) - set(live))
+
+    return {
+        "owner": owner,
+        "live_count": len(live),
+        "configured_count": len(configured),
+        "live": live,
+        "configured": configured,
+        "missing_from_config": missing_from_config,
+        "missing_from_github": missing_from_github,
+        "matches": not missing_from_config and not missing_from_github,
+    }
+
 def repository_drift_state(cfg, runner=run_gh):
     baseline = preflight(cfg, runner)
     owner = cfg["owner"]
@@ -324,6 +356,7 @@ def parse_args():
     mode.add_argument("--dry-run", action="store_true")
     mode.add_argument("--check-pins", action="store_true")
     mode.add_argument("--check-repositories", action="store_true")
+    mode.add_argument("--check-inventory", action="store_true")
     return parser.parse_args()
 
 
@@ -346,6 +379,12 @@ def main():
             state = repository_drift_state(cfg)
             print(json.dumps(state, indent=2, sort_keys=True))
             return 0 if state["matches"] else 2
+
+        if args.check_inventory:
+            state = repository_inventory_state(cfg)
+            print(json.dumps(state, indent=2, sort_keys=True))
+            return 0 if state["matches"] else 2
+
 
         result = apply_all(cfg, dry_run=args.dry_run)
         if args.dry_run:
