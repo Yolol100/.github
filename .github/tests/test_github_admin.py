@@ -237,6 +237,29 @@ class GitHubAdminTests(unittest.TestCase):
         self.assertFalse(state["matches"])
         self.assertTrue(state["current"][0].startswith("gist:"))
 
+    def test_repository_drift_state_matches_exact_state(self):
+        cfg = self.config()
+        fake = FakeRunner({
+            "Yolol100/One": ga.desired_state(cfg["repositories"][0]),
+            "Yolol100/Two": ga.desired_state(cfg["repositories"][1]),
+        })
+        state = ga.repository_drift_state(cfg, runner=fake)
+        self.assertTrue(state["matches"])
+        self.assertTrue(all(item["matches"] for item in state["repositories"]))
+        self.assertEqual(fake.edit_calls, [])
+
+    def test_repository_drift_state_detects_difference(self):
+        cfg = self.config()
+        fake = FakeRunner({
+            "Yolol100/One": repo_state("wrong", "https://example.com/one", ["php", "wordpress"]),
+            "Yolol100/Two": ga.desired_state(cfg["repositories"][1]),
+        })
+        state = ga.repository_drift_state(cfg, runner=fake)
+        self.assertFalse(state["matches"])
+        self.assertFalse(state["repositories"][0]["matches"])
+        self.assertTrue(state["repositories"][1]["matches"])
+        self.assertEqual(fake.edit_calls, [])
+
     def test_dry_run_has_no_writes(self):
         cfg = self.config()
         fake = FakeRunner({
