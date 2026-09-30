@@ -108,7 +108,8 @@
         "cart",
         "checkout",
         "wordpress-plugin"
-      ]
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "Dienstenoverzicht",
@@ -137,7 +138,8 @@
         "elementor",
         "woocommerce",
         "wordpress-plugin"
-      ]
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "Pontifex",
@@ -151,7 +153,8 @@
         "webhooks",
         "scheduled-tasks",
         "wordpress-plugin"
-      ]
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "cursussen-plugin",
@@ -164,7 +167,8 @@
         "shortcode",
         "courses",
         "wordpress-plugin"
-      ]
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "Patchrunner",
@@ -193,7 +197,8 @@
         "order-management",
         "experimental",
         "wordpress-plugin"
-      ]
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "doctorcura-ui",
@@ -207,7 +212,8 @@
         "currency",
         "experimental",
         "wordpress-plugin"
-      ]
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "translatewordpress",
@@ -221,7 +227,8 @@
         "woocommerce",
         "xliff",
         "wordpress-plugin"
-      ]
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "shutterstock-seo-",
@@ -235,7 +242,8 @@
         "media-library",
         "seo",
         "wordpress-plugin"
-      ]
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "acf-image-auto-filler",
@@ -249,20 +257,50 @@
         "batch-processing",
         "rollback",
         "wordpress-plugin"
-      ]
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "MDTPullMarker",
-      "description": "WoW Retail add-on that turns Mythic Dungeon Tools route targets into validated pull-aware marker plans and guarded smart macros."
+      "description": "WoW Retail add-on that turns Mythic Dungeon Tools route targets into validated pull-aware marker plans and guarded smart macros.",
+      "topics": [
+        "lua",
+        "world-of-warcraft",
+        "wow-addon",
+        "mythic-dungeon-tools",
+        "state-management",
+        "validation",
+        "runtime-safety"
+      ]
     },
     {
       "name": "KeystoneLens",
       "description": "WoW Retail add-on and Windows companion for Warcraft Logs Mythic+ percentile tooltips and applicant lookups with validated local preload data.",
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": "https://andrewbaeten.nl/category/cases",
+      "topics": [
+        "lua",
+        "python",
+        "world-of-warcraft",
+        "wow-addon",
+        "warcraft-logs",
+        "graphql",
+        "oauth",
+        "windows"
+      ]
     },
     {
       "name": "RaidLeadAssist",
-      "description": "WoW Retail raid-leader add-on for per-boss Heroic/Mythic macros, tactics and encounter-aware timing guidance with combat-safe updates."
+      "description": "WoW Retail raid-leader add-on for per-boss Heroic/Mythic macros, tactics and encounter-aware timing guidance with combat-safe updates.",
+      "topics": [
+        "lua",
+        "world-of-warcraft",
+        "wow-addon",
+        "raid-tools",
+        "dbm",
+        "bigwigs",
+        "state-management",
+        "ui"
+      ]
     },
     {
       "name": "Leadscanner",
@@ -274,7 +312,8 @@
         "data-validation",
         "human-in-the-loop",
         "workflow"
-      ]
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "programmeren",
@@ -288,7 +327,8 @@
         "github-actions",
         "quality-assurance",
         "plugin-audit"
-      ]
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "elementorjson",
@@ -297,15 +337,44 @@
     {
       "name": "seochecker",
       "description": "Reproducible technical SEO audits with bounded crawling, HTML/Lighthouse checks, rendered evidence and regression comparison.",
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": "https://andrewbaeten.nl/category/cases",
+      "topics": [
+        "seo",
+        "technical-seo",
+        "python",
+        "web-crawler",
+        "lighthouse",
+        "regression-testing",
+        "github-actions",
+        "quality-assurance"
+      ]
     },
     {
       "name": "Checklist",
-      "description": "Rollback-only legacy QA runner retained as a migration fallback; active read-only website QA runs through Designchecker."
+      "description": "Rollback-only legacy QA runner retained as a migration fallback; active read-only website QA runs through Designchecker.",
+      "topics": [
+        "quality-assurance",
+        "website-testing",
+        "regression-testing",
+        "rollback",
+        "legacy",
+        "automation"
+      ]
     },
     {
       "name": "transcriberen",
-      "description": "Controlled YouTube caption and comment acquisition runtime with bounded concurrency, deterministic artifacts and hosted/self-hosted fallback."
+      "description": "Controlled YouTube caption and comment acquisition runtime with bounded concurrency, deterministic artifacts and hosted/self-hosted fallback.",
+      "topics": [
+        "youtube",
+        "captions",
+        "transcription",
+        "python",
+        "github-actions",
+        "automation",
+        "data-pipeline",
+        "provenance"
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "wordpressconnector",
@@ -325,15 +394,46 @@
     {
       "name": "Orchestrator",
       "description": "Controlled multi-repository GitHub transport with least-privilege app tokens, explicit dependencies, reproducible requests and auditable artifacts.",
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": "https://andrewbaeten.nl/category/cases",
+      "topics": [
+        "python",
+        "github-actions",
+        "github-app",
+        "automation",
+        "workflow-orchestration",
+        "least-privilege",
+        "multi-repository",
+        "devops"
+      ]
     },
     {
       "name": "vacature-engine",
-      "description": "Deterministic vacancy filtering and ranking engine with structured JobPosting normalization, isolated ingestion and reproducible decision contracts."
+      "description": "Deterministic vacancy filtering and ranking engine with structured JobPosting normalization, isolated ingestion and reproducible decision contracts.",
+      "topics": [
+        "python",
+        "job-search",
+        "recruiting",
+        "schema-org",
+        "data-normalization",
+        "automation",
+        "testing",
+        "workflow"
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "Elementorconnector",
-      "description": "Legacy Elementor migration and rollback source retained while WordPress Connector replaces the old bridge through controlled parity checks."
+      "description": "Legacy Elementor migration and rollback source retained while WordPress Connector replaces the old bridge through controlled parity checks.",
+      "topics": [
+        "wordpress",
+        "elementor",
+        "php",
+        "migration",
+        "rollback",
+        "rest-api",
+        "woocommerce",
+        "acf"
+      ]
     },
     {
       "name": "Yolol100",
