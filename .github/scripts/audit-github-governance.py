@@ -116,6 +116,7 @@ def audit_repository(owner, name, runner=run_gh):
     metadata = api_json(f"repos/{repo}", runner) or {}
     default_branch = metadata.get("default_branch") or "main"
 
+    branch = api_json(f"repos/{repo}/branches/{default_branch}", runner) or {}
     protection = optional_api_json(
         f"repos/{repo}/branches/{default_branch}/protection",
         runner,
@@ -145,7 +146,8 @@ def audit_repository(owner, name, runner=run_gh):
             for r in rulesets
             if isinstance(r, dict) and r.get("enforcement") == "active"
         ),
-        "protection": protection_summary(protection),
+        "default_branch_protected": bool(branch.get("protected")),
+        "classic_protection": protection_summary(protection),
         "security": security_summary(metadata),
     }
     return result
@@ -161,13 +163,15 @@ def build_report(cfg, runner=run_gh):
     summary = {
         "repository_count": len(repositories),
         "protected_count": sum(
-            1 for r in repositories if r["protection"]["protected"] is True
+            1 for r in repositories if r["default_branch_protected"]
         ),
         "unprotected": [
-            r["repo"] for r in repositories if r["protection"]["protected"] is False
+            r["repo"] for r in repositories if not r["default_branch_protected"]
         ],
-        "protection_unavailable": [
-            r["repo"] for r in repositories if r["protection"]["protected"] is None
+        "classic_protection_unavailable": [
+            r["repo"]
+            for r in repositories
+            if r["classic_protection"]["protected"] is None
         ],
         "with_active_rulesets": [
             r["repo"] for r in repositories if r["active_rulesets"]
