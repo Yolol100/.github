@@ -24,9 +24,9 @@ Privérepositories erven deze bestanden niet automatisch en moeten ze expliciet 
 
 ### One-time credential setup
 
-The apply workflow requires a repository secret named `GH_ADMIN_TOKEN`. Use a **dedicated fine-grained personal access token** with **All repositories** access and repository permission **Administration: write** when you want this control repository to manage current and future repositories on the account. Do not reuse or pipe the broad OAuth token from `gh auth token` into this secret.
+The apply workflow requires a repository secret named `TH_ADMIN_TOKEN`. Use a **dedicated fine-grained personal access token** with **All repositories** access and repository permission **Administration: write** when you want this control repository to manage current and future repositories on the account. Do not reuse or pipe the broad OAuth token from `gh auth token` into this secret.
 
-Create the fine-grained token in GitHub account settings, then store that token as the `GH_ADMIN_TOKEN` Actions secret on `Yolol100/.github`. The token is consumed only by the apply job and is never committed to this repository.
+Create the fine-grained token in GitHub account settings, then store that token as the `TH_ADMIN_TOKEN` Actions secret on `Yolol100/.github`. The workflow maps `TH_ADMIN_TOKEN` to `GH_TOKEN` only inside the apply steps. The token is consumed only by the apply job and is never committed to this repository.
 
 ### Profile pins
 
