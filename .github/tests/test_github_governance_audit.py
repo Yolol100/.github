@@ -60,6 +60,23 @@ class GovernanceAuditTests(unittest.TestCase):
         self.assertIsNone(state["dependabot_security_updates"])
         self.assertIsNone(state["advanced_security"])
 
+    def test_effective_protection_can_come_from_branch_readback(self):
+        repo = {
+            "repo": "Yolol100/One",
+            "visibility": "public",
+            "archived": False,
+            "default_branch": "main",
+            "rulesets_access": "available",
+            "rulesets_error": "",
+            "rulesets_total": 1,
+            "active_rulesets": ["Protect main"],
+            "default_branch_protected": True,
+            "classic_protection": ga.protection_summary(None),
+            "security": ga.security_summary({}),
+        }
+        self.assertTrue(repo["default_branch_protected"])
+        self.assertFalse(repo["classic_protection"]["protected"])
+
     def test_build_report_aggregates(self):
         cfg = {
             "owner": "Yolol100",
@@ -76,7 +93,10 @@ class GovernanceAuditTests(unittest.TestCase):
                 "rulesets_error": "",
                 "rulesets_total": 1 if name == "One" else 0,
                 "active_rulesets": ["Protect main"] if name == "One" else [],
-                "protection": {
+                "default_branch_protected": name == "One",
+                "classic_protection": {
+                    "access": "available",
+                    "access_error": "",
                     "protected": name == "One",
                     "pull_request_reviews": name == "One",
                     "required_status_checks": ["validate"] if name == "One" else [],
