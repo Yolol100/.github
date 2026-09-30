@@ -115,7 +115,7 @@ def normalize_state(raw):
     return {
         "description": raw.get("description") or "",
         "homepage": raw.get("homepageUrl") or "",
-        "topics": sorted(x["name"] for x in raw.get("repositoryTopics", [])),
+        "topics": sorted(x["name"] for x in (raw.get("repositoryTopics") or [])),
     }
 
 
