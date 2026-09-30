@@ -7,14 +7,18 @@ on:
     paths:
       - github-admin.json
       - .github/scripts/apply-github-admin.py
+      - .github/scripts/apply-github-branch-safety.py
       - .github/tests/test_github_admin.py
+      - .github/tests/test_github_branch_safety.py
       - .github/workflows/github-admin.yml
       - .github/workflows/github-admin-ci.yml
   pull_request:
     paths:
       - github-admin.json
       - .github/scripts/apply-github-admin.py
+      - .github/scripts/apply-github-branch-safety.py
       - .github/tests/test_github_admin.py
+      - .github/tests/test_github_branch_safety.py
       - .github/workflows/github-admin.yml
       - .github/workflows/github-admin-ci.yml
 
@@ -32,10 +36,13 @@ jobs:
           persist-credentials: false
 
       - name: Syntax check
-        run: python3 -m py_compile .github/scripts/apply-github-admin.py .github/tests/test_github_admin.py
+        run: |
+          python3 -m py_compile             .github/scripts/apply-github-admin.py             .github/scripts/apply-github-branch-safety.py             .github/tests/test_github_admin.py             .github/tests/test_github_branch_safety.py
 
       - name: Validate live configuration file
-        run: python3 .github/scripts/apply-github-admin.py github-admin.json --validate-only
+        run: |
+          python3 .github/scripts/apply-github-admin.py github-admin.json --validate-only
+          python3 .github/scripts/apply-github-branch-safety.py github-admin.json --validate-only
 
       - name: Run scenario tests
         run: python3 -m unittest discover -s .github/tests -p 'test_*.py' -v
