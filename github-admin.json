@@ -83,51 +83,172 @@
     },
     {
       "name": "scan-duplicate-images",
-      "description": "Read-only WordPress media audit for repeated image usage across featured images and ACF fields, with background scanning and CSV export."
+      "description": "Read-only WordPress media audit for repeated image usage across featured images and ACF fields, with background scanning and CSV export.",
+      "topics": [
+        "wordpress",
+        "php",
+        "media-library",
+        "acf",
+        "image-audit",
+        "csv",
+        "quality-assurance",
+        "wordpress-plugin"
+      ]
     },
     {
       "name": "Woocommerce-egaline-calculator",
-      "description": "WooCommerce material calculator that turns thickness and area into product quantity and pricing while preserving cart, checkout and order data."
+      "description": "WooCommerce material calculator that turns thickness and area into product quantity and pricing while preserving cart, checkout and order data.",
+      "topics": [
+        "wordpress",
+        "woocommerce",
+        "php",
+        "calculator",
+        "pricing",
+        "cart",
+        "checkout",
+        "wordpress-plugin"
+      ]
     },
     {
       "name": "Dienstenoverzicht",
-      "description": "WordPress service directory with structured content, shortcode-based search and filtering, and controlled CSV import/export."
+      "description": "WordPress service directory with structured content, shortcode-based search and filtering, and controlled CSV import/export.",
+      "topics": [
+        "wordpress",
+        "php",
+        "custom-post-type",
+        "taxonomy",
+        "ajax",
+        "csv",
+        "service-directory",
+        "wordpress-plugin"
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "Link",
-      "description": "WordPress internal-linking plugin with HTML-aware keyword mapping, CSV import/export and optional ACF, Elementor and WooCommerce support."
+      "description": "WordPress internal-linking plugin with HTML-aware keyword mapping, CSV import/export and optional ACF, Elementor and WooCommerce support.",
+      "topics": [
+        "wordpress",
+        "php",
+        "internal-linking",
+        "seo",
+        "acf",
+        "elementor",
+        "woocommerce",
+        "wordpress-plugin"
+      ]
     },
     {
       "name": "Pontifex",
-      "description": "WordPress integration for Pontifex exam planning and registration with SOAP API connectivity, Mollie payments, webhooks and scheduled sync."
+      "description": "WordPress integration for Pontifex exam planning and registration with SOAP API connectivity, Mollie payments, webhooks and scheduled sync.",
+      "topics": [
+        "wordpress",
+        "php",
+        "soap",
+        "mollie",
+        "payments",
+        "webhooks",
+        "scheduled-tasks",
+        "wordpress-plugin"
+      ]
     },
     {
       "name": "cursussen-plugin",
-      "description": "WordPress course management plugin with structured course content, responsive shortcode output and a paginated public REST API."
+      "description": "WordPress course management plugin with structured course content, responsive shortcode output and a paginated public REST API.",
+      "topics": [
+        "wordpress",
+        "php",
+        "custom-post-type",
+        "rest-api",
+        "shortcode",
+        "courses",
+        "wordpress-plugin"
+      ]
     },
     {
       "name": "Patchrunner",
-      "description": "Guarded WordPress plugin patching with structured packages, exact previews, backups, production gates and rollback."
+      "description": "Guarded WordPress plugin patching with structured packages, exact previews, backups, production gates and rollback.",
+      "topics": [
+        "wordpress",
+        "php",
+        "patching",
+        "backup",
+        "rollback",
+        "security",
+        "maintenance",
+        "wordpress-plugin"
+      ],
+      "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
       "name": "doctorcura-core",
-      "description": "Experimental WordPress/WooCommerce domain plugin for DoctorCura account, verification, checkout, order and request workflows."
+      "description": "Experimental WordPress/WooCommerce domain plugin for DoctorCura account, verification, checkout, order and request workflows.",
+      "topics": [
+        "wordpress",
+        "woocommerce",
+        "php",
+        "account-management",
+        "checkout",
+        "order-management",
+        "experimental",
+        "wordpress-plugin"
+      ]
     },
     {
       "name": "doctorcura-ui",
-      "description": "Experimental WordPress/WooCommerce presentation plugin for DoctorCura storefront, variations, currency switching and accessible UI components."
+      "description": "Experimental WordPress/WooCommerce presentation plugin for DoctorCura storefront, variations, currency switching and accessible UI components.",
+      "topics": [
+        "wordpress",
+        "woocommerce",
+        "php",
+        "storefront",
+        "accessibility",
+        "currency",
+        "experimental",
+        "wordpress-plugin"
+      ]
     },
     {
       "name": "translatewordpress",
-      "description": "Review-first WordPress translation plugin with Elementor, ACF and WooCommerce support, CSV/XLIFF workflows, SEO integration and optional AI assistance."
+      "description": "Review-first WordPress translation plugin with Elementor, ACF and WooCommerce support, CSV/XLIFF workflows, SEO integration and optional AI assistance.",
+      "topics": [
+        "wordpress",
+        "php",
+        "translation",
+        "elementor",
+        "acf",
+        "woocommerce",
+        "xliff",
+        "wordpress-plugin"
+      ]
     },
     {
       "name": "shutterstock-seo-",
-      "description": "WordPress workflow for searching, reviewing, licensing and attaching Shutterstock images to ACF fields with OAuth and guarded media handling."
+      "description": "WordPress workflow for searching, reviewing, licensing and attaching Shutterstock images to ACF fields with OAuth and guarded media handling.",
+      "topics": [
+        "wordpress",
+        "php",
+        "shutterstock",
+        "oauth",
+        "acf",
+        "media-library",
+        "seo",
+        "wordpress-plugin"
+      ]
     },
     {
       "name": "acf-image-auto-filler",
-      "description": "WordPress admin plugin for mapping Media Library images to ACF and featured-image fields with preview, batch processing, rollback and audit logging."
+      "description": "WordPress admin plugin for mapping Media Library images to ACF and featured-image fields with preview, batch processing, rollback and audit logging.",
+      "topics": [
+        "wordpress",
+        "php",
+        "acf",
+        "media-library",
+        "featured-image",
+        "batch-processing",
+        "rollback",
+        "wordpress-plugin"
+      ]
     },
     {
       "name": "MDTPullMarker",
@@ -143,11 +264,29 @@
     },
     {
       "name": "Leadscanner",
-      "description": "Controlled B2B lead workflow for public-source discovery, evidence-bound contact verification and human-reviewed outreach drafts."
+      "description": "Controlled B2B lead workflow for public-source discovery, evidence-bound contact verification and human-reviewed outreach drafts.",
+      "topics": [
+        "lead-generation",
+        "b2b",
+        "automation",
+        "data-validation",
+        "human-in-the-loop",
+        "workflow"
+      ]
     },
     {
       "name": "programmeren",
-      "description": "Repository-native WordPress plugin audit harness with coding standards, security scanning, runtime checks, SBOM evidence and reproducible packaging."
+      "description": "Repository-native WordPress plugin audit harness with coding standards, security scanning, runtime checks, SBOM evidence and reproducible packaging.",
+      "topics": [
+        "wordpress",
+        "php",
+        "security",
+        "static-analysis",
+        "sbom",
+        "github-actions",
+        "quality-assurance",
+        "plugin-audit"
+      ]
     },
     {
       "name": "elementorjson",
@@ -167,7 +306,17 @@
     },
     {
       "name": "wordpressconnector",
-      "description": "Controlled WordPress automation bridge with GitHub OIDC, capability-gated REST actions, readback, rollback and zero-config site execution."
+      "description": "Controlled WordPress automation bridge with GitHub OIDC, capability-gated REST actions, readback, rollback and zero-config site execution.",
+      "topics": [
+        "wordpress",
+        "php",
+        "rest-api",
+        "github-actions",
+        "oidc",
+        "automation",
+        "woocommerce",
+        "acf"
+      ]
     },
     {
       "name": "Orchestrator",
@@ -183,11 +332,27 @@
     },
     {
       "name": "Yolol100",
-      "description": "Professional GitHub portfolio covering WordPress, WooCommerce, automation, QA, SEO and supporting engineering projects."
+      "description": "Professional GitHub portfolio covering WordPress, WooCommerce, automation, QA, SEO and supporting engineering projects.",
+      "topics": [
+        "wordpress",
+        "woocommerce",
+        "php",
+        "automation",
+        "quality-assurance",
+        "portfolio"
+      ]
     },
     {
       "name": ".github",
-      "description": "Shared repository standards and GitHub admin control for Yolol100, including community files, metadata management and profile-pin auditing."
+      "description": "Shared repository standards and GitHub admin control for Yolol100, including community files, metadata management and profile-pin auditing.",
+      "topics": [
+        "github",
+        "github-actions",
+        "repository-management",
+        "security",
+        "automation",
+        "governance"
+      ]
     }
   ],
   "profile": {
