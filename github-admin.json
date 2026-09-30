@@ -176,6 +176,18 @@
     {
       "name": "vacature-engine",
       "description": "Deterministic vacancy filtering and ranking engine with structured JobPosting normalization, isolated ingestion and reproducible decision contracts."
+    },
+    {
+      "name": "Elementorconnector",
+      "description": "Legacy Elementor migration and rollback source retained while WordPress Connector replaces the old bridge through controlled parity checks."
+    },
+    {
+      "name": "Yolol100",
+      "description": "Professional GitHub portfolio covering WordPress, WooCommerce, automation, QA, SEO and supporting engineering projects."
+    },
+    {
+      "name": ".github",
+      "description": "Shared repository standards and GitHub admin control for Yolol100, including community files, metadata management and profile-pin auditing."
     }
   ],
   "profile": {
