@@ -9,9 +9,11 @@ on:
       - .github/scripts/apply-github-admin.py
       - .github/scripts/audit-github-governance.py
       - .github/scripts/apply-github-branch-safety.py
+      - .github/scripts/apply-github-public-security.py
       - .github/tests/test_github_admin.py
       - .github/tests/test_github_governance_audit.py
       - .github/tests/test_github_branch_safety.py
+      - .github/tests/test_github_public_security.py
       - .github/workflows/github-admin.yml
       - .github/workflows/github-admin-ci.yml
   pull_request:
@@ -20,9 +22,11 @@ on:
       - .github/scripts/apply-github-admin.py
       - .github/scripts/audit-github-governance.py
       - .github/scripts/apply-github-branch-safety.py
+      - .github/scripts/apply-github-public-security.py
       - .github/tests/test_github_admin.py
       - .github/tests/test_github_governance_audit.py
       - .github/tests/test_github_branch_safety.py
+      - .github/tests/test_github_public_security.py
       - .github/workflows/github-admin.yml
       - .github/workflows/github-admin-ci.yml
 
@@ -41,12 +45,21 @@ jobs:
 
       - name: Syntax check
         run: |
-          python3 -m py_compile             .github/scripts/apply-github-admin.py             .github/scripts/apply-github-branch-safety.py             .github/tests/test_github_admin.py             .github/tests/test_github_branch_safety.py
+          python3 -m py_compile \
+            .github/scripts/apply-github-admin.py \
+            .github/scripts/audit-github-governance.py \
+            .github/scripts/apply-github-branch-safety.py \
+            .github/scripts/apply-github-public-security.py \
+            .github/tests/test_github_admin.py \
+            .github/tests/test_github_governance_audit.py \
+            .github/tests/test_github_branch_safety.py \
+            .github/tests/test_github_public_security.py
 
       - name: Validate live configuration file
         run: |
           python3 .github/scripts/apply-github-admin.py github-admin.json --validate-only
           python3 .github/scripts/apply-github-branch-safety.py github-admin.json --validate-only
+          python3 .github/scripts/apply-github-public-security.py github-admin.json --validate-only
 
       - name: Run scenario tests
         run: python3 -m unittest discover -s .github/tests -p 'test_*.py' -v
