@@ -48,3 +48,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
         run: python3 .github/scripts/apply-github-admin.py github-admin.json
+
+      - name: Verify repository metadata drift
+        env:
+          GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
+        run: python3 .github/scripts/apply-github-admin.py github-admin.json --check-repositories
