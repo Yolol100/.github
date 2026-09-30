@@ -392,6 +392,20 @@
       "homepage": "https://andrewbaeten.nl/category/cases"
     },
     {
+      "name": "myhost-mailbox",
+      "description": "Controlled IMAP/SMTP mailbox runtime with bounded reads, explicit write confirmation, draft handling and send safety gates.",
+      "topics": [
+        "python",
+        "imap",
+        "smtp",
+        "email",
+        "automation",
+        "security",
+        "human-in-the-loop",
+        "workflow"
+      ]
+    },
+    {
       "name": "Orchestrator",
       "description": "Controlled multi-repository GitHub transport with least-privilege app tokens, explicit dependencies, reproducible requests and auditable artifacts.",
       "homepage": "https://andrewbaeten.nl/category/cases",
