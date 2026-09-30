@@ -189,6 +189,29 @@ def preflight(cfg, runner=run_gh):
     return baseline
 
 
+def repository_drift_state(cfg, runner=run_gh):
+    baseline = preflight(cfg, runner)
+    owner = cfg["owner"]
+    repositories = []
+
+    for item in cfg["repositories"]:
+        repo = f"{owner}/{item['name']}"
+        current = baseline[repo]
+        target = desired_state(item, current)
+        repositories.append({
+            "repo": repo,
+            "matches": states_equal(current, target),
+            "current": current,
+            "target": target,
+        })
+
+    return {
+        "owner": owner,
+        "matches": all(item["matches"] for item in repositories),
+        "repositories": repositories,
+    }
+
+
 def apply_all(cfg, runner=run_gh, dry_run=False):
     baseline = preflight(cfg, runner)
     owner = cfg["owner"]
@@ -300,6 +323,7 @@ def parse_args():
     mode.add_argument("--validate-only", action="store_true")
     mode.add_argument("--dry-run", action="store_true")
     mode.add_argument("--check-pins", action="store_true")
+    mode.add_argument("--check-repositories", action="store_true")
     return parser.parse_args()
 
 
@@ -315,6 +339,11 @@ def main():
 
         if args.check_pins:
             state = profile_pin_state(cfg)
+            print(json.dumps(state, indent=2, sort_keys=True))
+            return 0 if state["matches"] else 2
+
+        if args.check_repositories:
+            state = repository_drift_state(cfg)
             print(json.dumps(state, indent=2, sort_keys=True))
             return 0 if state["matches"] else 2
 
