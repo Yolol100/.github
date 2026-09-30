@@ -185,6 +185,12 @@ class GitHubAdminTests(unittest.TestCase):
         with self.assertRaises(ga.ConfigError):
             ga.validate(cfg)
 
+    def test_validate_rejects_pin_not_in_repositories(self):
+        cfg = self.config()
+        cfg["profile"]["desired_pins"] = ["One", "Missing"]
+        with self.assertRaises(ga.ConfigError):
+            ga.validate(cfg)
+
     def test_validate_rejects_duplicate_pins(self):
         cfg = self.config()
         cfg["profile"]["desired_pins"] = ["One", "One"]
