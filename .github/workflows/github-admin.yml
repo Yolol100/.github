@@ -39,18 +39,9 @@ jobs:
           fi
 
       - name: Verify repository inventory coverage
-        shell: bash
         env:
           GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
-        run: |
-          set -euo pipefail
-          gh repo list "$GITHUB_REPOSITORY_OWNER" --limit 1000 --json name --jq '.[].name' | LC_ALL=C sort > live-repositories.txt
-          jq -r '.repositories[].name' github-admin.json | LC_ALL=C sort > configured-repositories.txt
-          if ! diff -u configured-repositories.txt live-repositories.txt; then
-            echo "::error::github-admin.json must cover every repository owned by $GITHUB_REPOSITORY_OWNER."
-            exit 1
-          fi
-          echo "Repository inventory coverage verified."
+        run: python3 .github/scripts/apply-github-admin.py github-admin.json --check-inventory
 
       - name: Validate configuration
         run: python3 .github/scripts/apply-github-admin.py github-admin.json --validate-only
