@@ -15,6 +15,7 @@ class FakeRunner:
         self.rulesets = {}
         self.calls = []
         self.next_id = 100
+        self.fail_create_repo = None
 
     def add_repo(self, name, visibility="public", archived=False, rulesets=None):
         self.repos[name] = {"visibility": visibility, "archived": archived}
@@ -38,14 +39,22 @@ class FakeRunner:
                 return json.dumps([
                     {"id": r["id"], "name": r["name"]} for r in self.rulesets[name]
                 ])
-            payload = json.loads(input_text)
-            self.next_id += 1
-            created = {"id": self.next_id, **payload}
-            self.rulesets[name].append(created)
-            return json.dumps(created)
+            if method == "POST":
+                if name == self.fail_create_repo:
+                    raise bs.BranchSafetyError("create failed")
+                payload = json.loads(input_text)
+                self.next_id += 1
+                created = {"id": self.next_id, **payload}
+                self.rulesets[name].append(created)
+                return json.dumps(created)
 
         if len(parts) == 5 and parts[3] == "rulesets":
             ruleset_id = int(parts[4])
+            if method == "DELETE":
+                self.rulesets[name] = [
+                    item for item in self.rulesets[name] if item["id"] != ruleset_id
+                ]
+                return ""
             for item in self.rulesets[name]:
                 if item["id"] == ruleset_id:
                     return json.dumps(item)
@@ -106,6 +115,18 @@ class BranchSafetyTests(unittest.TestCase):
         self.assertEqual(len(result["created"]), 1)
         created = fake.rulesets["One"][0]
         self.assertTrue(bs.ruleset_matches(created))
+
+    def test_failure_rolls_back_earlier_created_rulesets(self):
+        fake = FakeRunner()
+        fake.add_repo("One")
+        fake.add_repo("Two")
+        fake.fail_create_repo = "Two"
+
+        with self.assertRaises(bs.BranchSafetyError):
+            bs.apply(config("One", "Two"), runner=fake)
+
+        self.assertEqual(fake.rulesets["One"], [])
+        self.assertEqual(fake.rulesets["Two"], [])
 
 
 if __name__ == "__main__":
