@@ -475,6 +475,14 @@
         "automation",
         "governance"
       ]
+    },
+    {
+      "name": "browser-search",
+      "description": ""
+    },
+    {
+      "name": "test",
+      "description": ""
     }
   ],
   "profile": {
