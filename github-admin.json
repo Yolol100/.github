@@ -363,7 +363,7 @@
     },
     {
       "name": "transcriberen",
-      "description": "Controlled YouTube caption and comment acquisition runtime with bounded concurrency, deterministic artifacts and hosted/self-hosted fallback.",
+      "description": "Controlled YouTube caption and comment acquisition runtime with bounded concurrency, deterministic artifacts and GitHub-hosted-only production execution.",
       "topics": [
         "youtube",
         "captions",
