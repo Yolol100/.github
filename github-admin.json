@@ -478,11 +478,33 @@
     },
     {
       "name": "browser-search",
-      "description": ""
+      "description": "Owner-triggered Playwright browser search via a self-hosted GitHub Actions runner; issue queries and results are public.",
+      "topics": [
+        "github-actions",
+        "playwright",
+        "javascript",
+        "browser-automation",
+        "web-search",
+        "self-hosted-runner"
+      ]
+    },
+    {
+      "name": "onderhoud",
+      "description": "Manual Hostinger SSH checks and scoped WordPress theme/plugin deployments through GitHub Actions; live SSH connection not yet verified.",
+      "topics": [
+        "github-actions",
+        "python",
+        "wordpress",
+        "hostinger",
+        "ssh",
+        "deployment",
+        "maintenance",
+        "human-in-the-loop"
+      ]
     },
     {
       "name": "test",
-      "description": ""
+      "description": "Empty sandbox repository; not a portfolio project."
     }
   ],
   "profile": {
