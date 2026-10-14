@@ -503,6 +503,10 @@
       ]
     },
     {
+      "name": "theme",
+      "description": "Independent WordPress block-theme starter with reproducible ZIP, isolated runtime QA and staging-first acceptance."
+    },
+    {
       "name": "test",
       "description": "Empty sandbox repository; not a portfolio project."
     }
