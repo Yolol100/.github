@@ -522,6 +522,10 @@
         "woocommerce",
         "quality-assurance"
       ]
+    },
+    {
+      "name": "test",
+      "description": "Empty sandbox repository; not a portfolio project."
     }
   ],
   "profile": {
@@ -535,7 +539,6 @@
     ]
   },
   "inventory_exclusions": [
-    "test",
     "Testen"
   ]
 }
