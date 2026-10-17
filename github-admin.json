@@ -525,7 +525,7 @@
     },
     {
       "name": "test",
-      "description": "Empty sandbox repository; not a portfolio project."
+      "description": "Annotated WordPress/PHP import processor and documentation sample from ACF Page Text Manager; non-installable review copy."
     }
   ],
   "profile": {
