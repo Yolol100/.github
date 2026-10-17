@@ -5,7 +5,7 @@
     {
       "name": "ACF-Text-Manager",
       "description": "Edit WordPress, ACF and SEO content in one place, with reviewed CSV/XLSX bulk changes.",
-      "homepage": "",
+      "homepage": "https://andrewbaeten.nl/acf-page-text-manager/",
       "topics": [
         "wordpress",
         "php",
@@ -20,7 +20,7 @@
     {
       "name": "Content-Sync-Manager",
       "description": "Review and import/export WordPress pages, products and media with safeguards and recovery paths.",
-      "homepage": "",
+      "homepage": "https://andrewbaeten.nl/content-sync-manager/",
       "topics": [
         "wordpress",
         "php",
@@ -35,7 +35,7 @@
     {
       "name": "soocool-for-woocommerce",
       "description": "Connect WooCommerce orders to shipping with secure webhooks, payment checks, retries and labels.",
-      "homepage": "",
+      "homepage": "https://andrewbaeten.nl/socool-for-woocommerce/",
       "topics": [
         "wordpress",
         "woocommerce",
@@ -118,7 +118,7 @@
         "checkout",
         "wordpress-plugin"
       ],
-      "homepage": ""
+      "homepage": "https://andrewbaeten.nl/egaline-calculator/"
     },
     {
       "name": "Dienstenoverzicht",
@@ -192,7 +192,7 @@
         "maintenance",
         "wordpress-plugin"
       ],
-      "homepage": ""
+      "homepage": "https://andrewbaeten.nl/ai-patch-runner/"
     },
     {
       "name": "doctorcura-core",
