@@ -522,6 +522,10 @@
         "woocommerce",
         "quality-assurance"
       ]
+    },
+    {
+      "name": "test",
+      "description": "Annotated WordPress/PHP import processor and documentation sample from ACF Page Text Manager; non-installable review copy."
     }
   ],
   "profile": {
@@ -535,7 +539,6 @@
     ]
   },
   "inventory_exclusions": [
-    "test",
     "Testen"
   ]
 }
