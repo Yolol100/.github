@@ -264,6 +264,36 @@ class GitHubAdminTests(unittest.TestCase):
         self.assertEqual(state["missing_from_config"], ["Three"])
         self.assertEqual(state["missing_from_github"], [])
 
+    def test_inventory_exclusions_do_not_manage_or_flag_sandbox_repositories(self):
+        cfg = self.config()
+        cfg["inventory_exclusions"] = ["test", "Testen"]
+        ga.validate(cfg)
+        fake = FakeRunner({
+            "Yolol100/One": repo_state(),
+            "Yolol100/Two": repo_state(),
+            "Yolol100/test": repo_state(),
+            "Yolol100/Testen": repo_state(),
+        })
+        state = ga.repository_inventory_state(cfg, runner=fake)
+        self.assertTrue(state["matches"])
+        self.assertEqual(state["live_count"], 2)
+        self.assertEqual(state["configured_count"], 2)
+        self.assertEqual(state["missing_from_config"], [])
+        self.assertEqual(state["missing_from_github"], [])
+        self.assertEqual(fake.edit_calls, [])
+
+    def test_inventory_exclusions_reject_managed_repo(self):
+        cfg = self.config()
+        cfg["inventory_exclusions"] = ["One"]
+        with self.assertRaises(ga.ConfigError):
+            ga.validate(cfg)
+
+    def test_inventory_exclusions_reject_duplicate_names(self):
+        cfg = self.config()
+        cfg["inventory_exclusions"] = ["Testen", "Testen"]
+        with self.assertRaises(ga.ConfigError):
+            ga.validate(cfg)
+
     def test_repository_inventory_detects_stale_config_repo(self):
         cfg = self.config()
         fake = FakeRunner({
