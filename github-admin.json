@@ -79,7 +79,16 @@
     },
     {
       "name": "Wordpress",
-      "description": "WordPress media administration plugin for image metadata, CSV import/export, usage scanning and controlled ZIP exports."
+      "description": "Modern Image Manager — WordPress media admin tooling for image metadata, usage scanning, CSV workflows and guarded exports.",
+      "topics": [
+        "wordpress",
+        "php",
+        "wordpress-plugin",
+        "media-library",
+        "image-management",
+        "csv",
+        "metadata"
+      ]
     },
     {
       "name": "scan-duplicate-images",
@@ -451,7 +460,7 @@
     },
     {
       "name": "Yolol100",
-      "description": "Professional GitHub portfolio covering WordPress, WooCommerce, automation, QA, SEO and supporting engineering projects.",
+      "description": "Andrew Baeten — WordPress Developer & Web Designer | WooCommerce, custom PHP plugins, Gutenberg, UX and website QA.",
       "topics": [
         "wordpress",
         "woocommerce",
@@ -504,21 +513,29 @@
     },
     {
       "name": "theme",
-      "description": "Independent WordPress block-theme starter with reproducible ZIP, isolated runtime QA and staging-first acceptance."
-    },
-    {
-      "name": "test",
-      "description": "Empty sandbox repository; not a portfolio project."
+      "description": "Minimal WordPress Gutenberg block theme with reproducible ZIP builds, isolated runtime QA and clear staging acceptance.",
+      "topics": [
+        "wordpress",
+        "gutenberg",
+        "block-theme",
+        "full-site-editing",
+        "woocommerce",
+        "quality-assurance"
+      ]
     }
   ],
   "profile": {
     "desired_pins": [
       "ACF-Text-Manager",
-      "Content-Sync-Manager",
       "soocool-for-woocommerce",
-      "Ultracache-pro",
-      "Patchrunner",
-      "Dienstenoverzicht"
+      "Content-Sync-Manager",
+      "theme",
+      "Designchecker",
+      "Ultracache-pro"
     ]
-  }
+  },
+  "inventory_exclusions": [
+    "test",
+    "Testen"
+  ]
 }
