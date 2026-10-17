@@ -108,6 +108,17 @@ def validate(cfg):
                 if not isinstance(topic, str) or not TOPIC_RE.fullmatch(topic):
                     raise ConfigError(f"Invalid topic for {name}: {topic!r}")
 
+    exclusions = cfg.get("inventory_exclusions", [])
+    if not isinstance(exclusions, list):
+        raise ConfigError("inventory_exclusions must be a list")
+    if len(exclusions) != len(set(str(x) for x in exclusions)):
+        raise ConfigError("inventory_exclusions contains duplicates")
+    for excluded_name in exclusions:
+        if not isinstance(excluded_name, str) or not REPO_RE.fullmatch(excluded_name):
+            raise ConfigError(f"Invalid inventory exclusion: {excluded_name!r}")
+        if excluded_name in seen:
+            raise ConfigError(f"Excluded repository must not be managed: {excluded_name}")
+
     missing_pins = [pin for pin in pins if pin not in seen]
     if missing_pins:
         raise ConfigError(
@@ -201,10 +212,12 @@ def repository_inventory_state(cfg, runner=run_gh):
     if not isinstance(payload, list):
         raise GhError("GitHub repository inventory response must be a list")
 
+    excluded = set(cfg.get("inventory_exclusions", []))
     live = sorted(
         item.get("name")
         for item in payload
-        if isinstance(item, dict) and isinstance(item.get("name"), str) and item.get("name")
+        if isinstance(item, dict) and isinstance(item.get("name"), str)
+        and item.get("name") and item.get("name") not in excluded
     )
     configured = sorted(item["name"] for item in cfg["repositories"])
     missing_from_config = sorted(set(live) - set(configured))
