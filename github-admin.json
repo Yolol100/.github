@@ -4,7 +4,7 @@
   "repositories": [
     {
       "name": "ACF-Text-Manager",
-      "description": "WordPress admin tooling for ACF, SEO metadata and guarded CSV/XLSX content workflows.",
+      "description": "Edit WordPress, ACF and SEO content in one place, with reviewed CSV/XLSX bulk changes.",
       "homepage": "",
       "topics": [
         "wordpress",
@@ -19,7 +19,7 @@
     },
     {
       "name": "Content-Sync-Manager",
-      "description": "Controlled WordPress content and media import/export with ACF, WooCommerce, validation and recovery.",
+      "description": "Review and import/export WordPress pages, products and media with safeguards and recovery paths.",
       "homepage": "",
       "topics": [
         "wordpress",
@@ -34,7 +34,7 @@
     },
     {
       "name": "soocool-for-woocommerce",
-      "description": "WooCommerce transport API integration with HPOS, webhooks, background jobs and guarded order workflows.",
+      "description": "Connect WooCommerce orders to shipping with secure webhooks, payment checks, retries and labels.",
       "homepage": "",
       "topics": [
         "wordpress",
@@ -49,7 +49,7 @@
     },
     {
       "name": "Ultracache-pro",
-      "description": "WordPress performance and caching plugin with WooCommerce safeguards and frontend optimization.",
+      "description": "WordPress caching and frontend optimization with safety rules for WooCommerce cart and checkout.",
       "homepage": "",
       "topics": [
         "wordpress",
@@ -64,7 +64,7 @@
     },
     {
       "name": "Designchecker",
-      "description": "Read-only website QA for browser behaviour, accessibility, performance and visual regression.",
+      "description": "Repeatable website QA using Playwright, accessibility audits, Lighthouse and visual regression.",
       "homepage": "",
       "topics": [
         "typescript",
@@ -122,7 +122,7 @@
     },
     {
       "name": "Dienstenoverzicht",
-      "description": "WordPress service directory with structured content, shortcode-based search and filtering, and controlled CSV import/export.",
+      "description": "Searchable WordPress service directory with category filters, structured content and CSV editing.",
       "topics": [
         "wordpress",
         "php",
@@ -181,7 +181,7 @@
     },
     {
       "name": "Patchrunner",
-      "description": "Guarded WordPress plugin patching with structured packages, exact previews, backups, production gates and rollback.",
+      "description": "Preview reviewed WordPress plugin patches with permission gates, backups and rollback.",
       "topics": [
         "wordpress",
         "php",
@@ -460,7 +460,7 @@
     },
     {
       "name": "Yolol100",
-      "description": "Andrew Baeten — WordPress Developer & Web Designer | WooCommerce, custom PHP plugins, Gutenberg, UX and website QA.",
+      "description": "Andrew Baeten — WordPress & WooCommerce Developer | Web design, custom PHP, UX and website QA.",
       "topics": [
         "wordpress",
         "woocommerce",
@@ -471,7 +471,7 @@
         "portfolio",
         "github-profile"
       ],
-      "homepage": ""
+      "homepage": "https://andrewbaeten.nl/"
     },
     {
       "name": ".github",
@@ -513,7 +513,7 @@
     },
     {
       "name": "theme",
-      "description": "Minimal WordPress Gutenberg block theme with reproducible ZIP builds, isolated runtime QA and clear staging acceptance.",
+      "description": "Lean Gutenberg block theme starter with editable templates, design tokens and verified ZIP builds.",
       "topics": [
         "wordpress",
         "gutenberg",
