@@ -5,7 +5,7 @@
     {
       "name": "ACF-Text-Manager",
       "description": "WordPress admin tooling for ACF, SEO metadata and guarded CSV/XLSX content workflows.",
-      "homepage": "https://andrewbaeten.nl/category/cases",
+      "homepage": "",
       "topics": [
         "wordpress",
         "php",
@@ -20,7 +20,7 @@
     {
       "name": "Content-Sync-Manager",
       "description": "Controlled WordPress content and media import/export with ACF, WooCommerce, validation and recovery.",
-      "homepage": "https://andrewbaeten.nl/category/cases",
+      "homepage": "",
       "topics": [
         "wordpress",
         "php",
@@ -35,7 +35,7 @@
     {
       "name": "soocool-for-woocommerce",
       "description": "WooCommerce transport API integration with HPOS, webhooks, background jobs and guarded order workflows.",
-      "homepage": "https://andrewbaeten.nl/category/cases",
+      "homepage": "",
       "topics": [
         "wordpress",
         "woocommerce",
@@ -50,7 +50,7 @@
     {
       "name": "Ultracache-pro",
       "description": "WordPress performance and caching plugin with WooCommerce safeguards and frontend optimization.",
-      "homepage": "https://andrewbaeten.nl/category/cases",
+      "homepage": "",
       "topics": [
         "wordpress",
         "php",
@@ -65,7 +65,7 @@
     {
       "name": "Designchecker",
       "description": "Read-only website QA for browser behaviour, accessibility, performance and visual regression.",
-      "homepage": "https://andrewbaeten.nl/category/cases",
+      "homepage": "",
       "topics": [
         "typescript",
         "playwright",
@@ -103,7 +103,7 @@
         "quality-assurance",
         "wordpress-plugin"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "Woocommerce-egaline-calculator",
@@ -118,7 +118,7 @@
         "checkout",
         "wordpress-plugin"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "Dienstenoverzicht",
@@ -133,7 +133,7 @@
         "service-directory",
         "wordpress-plugin"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "Link",
@@ -148,7 +148,7 @@
         "woocommerce",
         "wordpress-plugin"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "Pontifex",
@@ -163,7 +163,7 @@
         "scheduled-tasks",
         "wordpress-plugin"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "cursussen-plugin",
@@ -177,7 +177,7 @@
         "courses",
         "wordpress-plugin"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "Patchrunner",
@@ -192,7 +192,7 @@
         "maintenance",
         "wordpress-plugin"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "doctorcura-core",
@@ -207,7 +207,7 @@
         "experimental",
         "wordpress-plugin"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "doctorcura-ui",
@@ -222,7 +222,7 @@
         "experimental",
         "wordpress-plugin"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "translatewordpress",
@@ -237,7 +237,7 @@
         "xliff",
         "wordpress-plugin"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "shutterstock-seo-",
@@ -252,7 +252,7 @@
         "seo",
         "wordpress-plugin"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "acf-image-auto-filler",
@@ -267,7 +267,7 @@
         "rollback",
         "wordpress-plugin"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "MDTPullMarker",
@@ -285,7 +285,7 @@
     {
       "name": "KeystoneLens",
       "description": "WoW Retail add-on and Windows companion for Warcraft Logs Mythic+ percentile tooltips and applicant lookups with validated local preload data.",
-      "homepage": "https://andrewbaeten.nl/category/cases",
+      "homepage": "",
       "topics": [
         "lua",
         "python",
@@ -322,7 +322,7 @@
         "human-in-the-loop",
         "workflow"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "programmeren",
@@ -337,7 +337,7 @@
         "quality-assurance",
         "plugin-audit"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "elementorjson",
@@ -346,7 +346,7 @@
     {
       "name": "seochecker",
       "description": "Reproducible technical SEO audits with bounded crawling, HTML/Lighthouse checks, rendered evidence and regression comparison.",
-      "homepage": "https://andrewbaeten.nl/category/cases",
+      "homepage": "",
       "topics": [
         "seo",
         "technical-seo",
@@ -383,7 +383,7 @@
         "data-pipeline",
         "provenance"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "wordpressconnector",
@@ -398,7 +398,7 @@
         "woocommerce",
         "acf"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "myhost-mailbox",
@@ -417,7 +417,7 @@
     {
       "name": "Orchestrator",
       "description": "Controlled multi-repository GitHub transport with least-privilege app tokens, explicit dependencies, reproducible requests and auditable artifacts.",
-      "homepage": "https://andrewbaeten.nl/category/cases",
+      "homepage": "",
       "topics": [
         "python",
         "github-actions",
@@ -442,7 +442,7 @@
         "testing",
         "workflow"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": "Elementorconnector",
@@ -471,7 +471,7 @@
         "portfolio",
         "github-profile"
       ],
-      "homepage": "https://andrewbaeten.nl/category/cases"
+      "homepage": ""
     },
     {
       "name": ".github",
