@@ -498,20 +498,6 @@
       ]
     },
     {
-      "name": "onderhoud",
-      "description": "Manual Hostinger SSH checks and scoped WordPress theme/plugin deployments through GitHub Actions; live SSH connection not yet verified.",
-      "topics": [
-        "github-actions",
-        "python",
-        "wordpress",
-        "hostinger",
-        "ssh",
-        "deployment",
-        "maintenance",
-        "human-in-the-loop"
-      ]
-    },
-    {
       "name": "theme",
       "description": "Lean Gutenberg block theme starter with editable templates, design tokens and verified ZIP builds.",
       "topics": [
