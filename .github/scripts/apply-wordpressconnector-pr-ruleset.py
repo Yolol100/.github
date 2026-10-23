@@ -99,6 +99,44 @@ def normalized(x):
     }
 
 
+def policy_matches(found, cfg):
+    """Compare security invariants, tolerating optional REST response defaults."""
+    want = desired(cfg)
+    base = normalized(found)
+    expected = normalized(want)
+    for key in ('name', 'target', 'enforcement', 'conditions', 'bypass_actors'):
+        if base[key] != expected[key]:
+            return False
+    rule_list = found.get('rules') or []
+    if len(rule_list) != 2 or {x.get('type') for x in rule_list} != {
+        'pull_request', 'required_status_checks'
+    }:
+        return False
+    rules = {x['type']: x.get('parameters') or {} for x in rule_list}
+    pr = rules['pull_request']
+    for key in ('dismiss_stale_reviews_on_push', 'require_code_owner_review',
+                'require_last_push_approval'):
+        if pr.get(key, False) is not False:
+            return False
+    if pr.get('required_approving_review_count', 0) != 0:
+        return False
+    if pr.get('required_review_thread_resolution') is not True:
+        return False
+    methods = pr.get('allowed_merge_methods')
+    if methods is not None and ('squash' not in methods or
+                                set(methods) - {'merge', 'squash', 'rebase'}):
+        return False
+    checks = rules['required_status_checks']
+    if checks.get('strict_required_status_checks_policy', False) is not False:
+        return False
+    if checks.get('do_not_enforce_on_create', False) is not False:
+        return False
+    checks_list = checks.get('required_status_checks')
+    return (isinstance(checks_list, list) and len(checks_list) == 1
+            and checks_list[0].get('context') == cfg['required_check']
+            and checks_list[0].get('integration_id') == cfg['required_check_app_id'])
+
+
 def is_base_protected(r):
     return (r.get('name') == BASE_RULESET_NAME
             and r.get('target') == 'branch' and r.get('enforcement') == 'active'
@@ -127,8 +165,14 @@ def inspect(c, runner=run_gh):
         raise ProtectionError('Existing Protect main ruleset drifted; refusing write')
     if names:
         found = api('repos/' + TARGET + '/rulesets/' + str(names[0]['id']), runner=runner)
-        if normalized(found) != normalized(desired(c)):
-            raise ProtectionError('Existing required-PR ruleset differs; refusing overwrite')
+        if not policy_matches(found, c):
+            # No secret material is present in GitHub ruleset descriptions;
+            # surface only the policy fields needed for independent review.
+            raise ProtectionError(
+                'Required-PR ruleset readback mismatch (no overwrite): '
+                + json.dumps({'expected': normalized(desired(c)), 'actual': normalized(found)},
+                             sort_keys=True, separators=(',', ':'))
+            )
         return {'action': 'no_change', 'ruleset_id': names[0]['id']}
     current = (branch.get('commit') or {}).get('sha')
     if current != c['expected_main_sha']:
