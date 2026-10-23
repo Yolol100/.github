@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - github-admin.json
+      - wordpressconnector-ruleset.json
+      - .github/scripts/apply-wordpressconnector-pr-ruleset.py
+      - .github/tests/test_wordpressconnector_pr_ruleset.py
   workflow_dispatch:
   schedule:
     - cron: '17 3 * * *'
@@ -106,6 +109,29 @@ jobs:
           python3 .github/scripts/apply-github-public-security.py github-admin.json --dry-run > public-security-status.json
           cat public-security-status.json
           jq -e 'all(.plan[]; .action != "enable")' public-security-status.json >/dev/null
+
+      - name: Validate WordPress Connector PR protection plan
+        run: python3 .github/scripts/apply-wordpressconnector-pr-ruleset.py wordpressconnector-ruleset.json --validate-only
+
+      - name: Preview WordPress Connector PR protection
+        env:
+          GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
+        run: python3 .github/scripts/apply-wordpressconnector-pr-ruleset.py wordpressconnector-ruleset.json --dry-run
+
+      - name: Apply and verify WordPress Connector PR protection
+        env:
+          GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
+        run: python3 .github/scripts/apply-wordpressconnector-pr-ruleset.py wordpressconnector-ruleset.json
+
+      - name: Verify WordPress Connector PR protection drift
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/apply-wordpressconnector-pr-ruleset.py wordpressconnector-ruleset.json --dry-run > wordpressconnector-pr-status.json
+          cat wordpressconnector-pr-status.json
+          jq -e '.preflight.action == "no_change"' wordpressconnector-pr-status.json >/dev/null
 
       - name: Audit repository governance
         env:
