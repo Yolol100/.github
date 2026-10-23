@@ -84,20 +84,20 @@ class GovernanceAuditTests(unittest.TestCase):
         self.assertLess(workflow.index("- name: Verify public repository security drift"),
                         workflow.index("- name: Audit repository governance"))
 
-    def test_declared_private_visibility_matches(self):
-        cfg = {"owner": "Yolol100", "repositories": [{"name": "elementorjson", "expected_visibility": "private"}]}
-        repos = [{"repo": "Yolol100/elementorjson", "visibility": "private"}]
+    def test_declared_public_visibility_matches(self):
+        cfg = {"owner": "Yolol100", "repositories": [{"name": "elementorjson", "expected_visibility": "public"}]}
+        repos = [{"repo": "Yolol100/elementorjson", "visibility": "public"}]
         self.assertEqual(ga.visibility_mismatches(cfg, repos), [])
 
-    def test_public_visibility_drift_is_reported(self):
-        cfg = {"owner": "Yolol100", "repositories": [{"name": "elementorjson", "expected_visibility": "private"}]}
-        repos = [{"repo": "Yolol100/elementorjson", "visibility": "public"}]
+    def test_unexpected_private_visibility_is_reported(self):
+        cfg = {"owner": "Yolol100", "repositories": [{"name": "elementorjson", "expected_visibility": "public"}]}
+        repos = [{"repo": "Yolol100/elementorjson", "visibility": "private"}]
         self.assertEqual(ga.visibility_mismatches(cfg, repos), [{
-            "repo": "Yolol100/elementorjson", "expected": "private", "actual": "public",
+            "repo": "Yolol100/elementorjson", "expected": "public", "actual": "private",
         }])
 
     def test_missing_visibility_fails_closed(self):
-        cfg = {"owner": "Yolol100", "repositories": [{"name": "elementorjson", "expected_visibility": "private"}]}
+        cfg = {"owner": "Yolol100", "repositories": [{"name": "elementorjson", "expected_visibility": "public"}]}
         self.assertEqual(len(ga.visibility_mismatches(cfg, [])), 1)
 
     def test_unmanaged_visibility_has_no_new_requirement(self):
