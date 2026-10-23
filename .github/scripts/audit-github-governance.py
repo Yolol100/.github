@@ -163,6 +163,21 @@ def audit_repository(owner, name, runner=run_gh):
     return result
 
 
+def visibility_mismatches(cfg, repositories):
+    """Read-only check. Never change repository visibility automatically."""
+    observed = {item["repo"]: item.get("visibility") for item in repositories}
+    mismatches = []
+    for item in cfg["repositories"]:
+        if "expected_visibility" not in item:
+            continue
+        repo = f"{cfg['owner']}/{item['name']}"
+        expected = item["expected_visibility"]
+        actual = observed.get(repo)
+        if actual != expected:
+            mismatches.append({"repo": repo, "expected": expected, "actual": actual})
+    return mismatches
+
+
 def build_report(cfg, runner=run_gh):
     owner = cfg["owner"]
     repositories = [
@@ -172,6 +187,7 @@ def build_report(cfg, runner=run_gh):
 
     summary = {
         "repository_count": len(repositories),
+        "visibility_mismatches": visibility_mismatches(cfg, repositories),
         "protected_count": sum(
             1 for r in repositories if r["default_branch_protected"] is True
         ),
@@ -222,7 +238,7 @@ def main():
         if args.output:
             Path(args.output).write_text(payload + "\n", encoding="utf-8")
         print(payload)
-        return 0
+        return 2 if report["summary"]["visibility_mismatches"] else 0
     except (AuditError, json.JSONDecodeError, OSError, KeyError) as error:
         print(str(error), file=sys.stderr)
         return 1

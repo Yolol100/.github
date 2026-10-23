@@ -341,7 +341,8 @@
     },
     {
       "name": "elementorjson",
-      "description": "Private controlled Elementor JSON QA runtime for validation, import/round-trip checks, responsive rendering and browser evidence."
+      "description": "Public controlled Elementor JSON QA runtime for sanitized validation, import/round-trip checks, responsive rendering and browser evidence.",
+      "expected_visibility": "public"
     },
     {
       "name": "seochecker",

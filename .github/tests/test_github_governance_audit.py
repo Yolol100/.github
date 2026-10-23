@@ -77,6 +77,34 @@ class GovernanceAuditTests(unittest.TestCase):
         self.assertTrue(repo["default_branch_protected"])
         self.assertFalse(repo["classic_protection"]["protected"])
 
+    def test_governance_visibility_gate_runs_after_safety(self):
+        workflow = (pathlib.Path(__file__).parents[1] / "workflows" / "github-admin.yml").read_text(encoding="utf-8")
+        self.assertLess(workflow.index("- name: Apply and verify public default-branch safety"),
+                        workflow.index("- name: Audit repository governance"))
+        self.assertLess(workflow.index("- name: Verify public repository security drift"),
+                        workflow.index("- name: Audit repository governance"))
+
+    def test_declared_public_visibility_matches(self):
+        cfg = {"owner": "Yolol100", "repositories": [{"name": "elementorjson", "expected_visibility": "public"}]}
+        repos = [{"repo": "Yolol100/elementorjson", "visibility": "public"}]
+        self.assertEqual(ga.visibility_mismatches(cfg, repos), [])
+
+    def test_unexpected_private_visibility_is_reported(self):
+        cfg = {"owner": "Yolol100", "repositories": [{"name": "elementorjson", "expected_visibility": "public"}]}
+        repos = [{"repo": "Yolol100/elementorjson", "visibility": "private"}]
+        self.assertEqual(ga.visibility_mismatches(cfg, repos), [{
+            "repo": "Yolol100/elementorjson", "expected": "public", "actual": "private",
+        }])
+
+    def test_missing_visibility_fails_closed(self):
+        cfg = {"owner": "Yolol100", "repositories": [{"name": "elementorjson", "expected_visibility": "public"}]}
+        self.assertEqual(len(ga.visibility_mismatches(cfg, [])), 1)
+
+    def test_unmanaged_visibility_has_no_new_requirement(self):
+        cfg = {"owner": "Yolol100", "repositories": [{"name": "ordinary"}]}
+        repos = [{"repo": "Yolol100/ordinary", "visibility": "public"}]
+        self.assertEqual(ga.visibility_mismatches(cfg, repos), [])
+
     def test_build_report_aggregates(self):
         cfg = {
             "owner": "Yolol100",
