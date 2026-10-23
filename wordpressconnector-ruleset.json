@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "repository": "Yolol100/wordpressconnector",
+  "expected_main_sha": "c303ad2f3cdd8f878c196c77f79882b55bc2a70e",
+  "required_check": "Required PR Gate",
+  "required_check_app_id": 15368
+}
