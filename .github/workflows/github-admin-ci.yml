@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - github-admin.json
+      - wordpressconnector-ruleset.json
+      - .github/scripts/apply-wordpressconnector-pr-ruleset.py
+      - .github/tests/test_wordpressconnector_pr_ruleset.py
       - .github/scripts/apply-github-admin.py
       - .github/scripts/audit-github-governance.py
       - .github/scripts/apply-github-branch-safety.py
@@ -19,6 +22,9 @@ on:
   pull_request:
     paths:
       - github-admin.json
+      - wordpressconnector-ruleset.json
+      - .github/scripts/apply-wordpressconnector-pr-ruleset.py
+      - .github/tests/test_wordpressconnector_pr_ruleset.py
       - .github/scripts/apply-github-admin.py
       - .github/scripts/audit-github-governance.py
       - .github/scripts/apply-github-branch-safety.py
@@ -50,16 +56,19 @@ jobs:
             .github/scripts/audit-github-governance.py \
             .github/scripts/apply-github-branch-safety.py \
             .github/scripts/apply-github-public-security.py \
+            .github/scripts/apply-wordpressconnector-pr-ruleset.py \
             .github/tests/test_github_admin.py \
             .github/tests/test_github_governance_audit.py \
             .github/tests/test_github_branch_safety.py \
-            .github/tests/test_github_public_security.py
+            .github/tests/test_github_public_security.py \
+            .github/tests/test_wordpressconnector_pr_ruleset.py
 
       - name: Validate live configuration file
         run: |
           python3 .github/scripts/apply-github-admin.py github-admin.json --validate-only
           python3 .github/scripts/apply-github-branch-safety.py github-admin.json --validate-only
           python3 .github/scripts/apply-github-public-security.py github-admin.json --validate-only
+          python3 .github/scripts/apply-wordpressconnector-pr-ruleset.py wordpressconnector-ruleset.json --validate-only
 
       - name: Run scenario tests
         run: python3 -m unittest discover -s .github/tests -p 'test_*.py' -v
