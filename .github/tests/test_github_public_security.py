@@ -13,6 +13,8 @@ class FakeRunner:
     def __init__(self):
         self.repos = {}
         self.calls = []
+        self.fail_patch_before = None
+        self.fail_patch_after = None
 
     def add_repo(self, name, visibility="public", archived=False, scanning=None, push=None):
         sec = {}
@@ -39,9 +41,15 @@ class FakeRunner:
             return json.dumps(self.repos[name])
 
         if method == "PATCH":
+            if name == self.fail_patch_before:
+                self.fail_patch_before = None
+                raise ps.PublicSecurityError("simulated PATCH rejection")
             payload = json.loads(input_text)
             sec = payload["security_and_analysis"]
             self.repos[name]["security_and_analysis"] = sec
+            if name == self.fail_patch_after:
+                self.fail_patch_after = None
+                raise ps.PublicSecurityError("simulated unknown PATCH outcome")
             return json.dumps(self.repos[name])
 
         raise AssertionError(f"unexpected method: {method}")
@@ -89,9 +97,44 @@ class PublicSecurityTests(unittest.TestCase):
         result = ps.apply(config("Old"), dry_run=True, runner=fake)
         self.assertEqual(result["plan"][0]["action"], "skip_archived")
 
+    def test_unknown_security_baseline_fails_before_any_write(self):
+        fake = FakeRunner()
+        fake.add_repo("First", scanning="disabled", push="disabled")
+        fake.add_repo("Unknown", scanning=None, push=None)
+        with self.assertRaisesRegex(ps.PublicSecurityError, "Cannot verify complete"):
+            ps.apply(config("First", "Unknown"), runner=fake)
+        self.assertEqual([call for call in fake.calls if "--method" in call[0]], [])
+        self.assertEqual(ps.security_status(fake.repos["First"])["secret_scanning"], "disabled")
+
+    def test_second_repo_failure_rolls_back_previous_write(self):
+        fake = FakeRunner()
+        fake.add_repo("First", scanning="disabled", push="disabled")
+        fake.add_repo("Second", scanning="disabled", push="disabled")
+        fake.fail_patch_before = "Second"
+        with self.assertRaisesRegex(ps.PublicSecurityError, "simulated PATCH rejection"):
+            ps.apply(config("First", "Second"), runner=fake)
+        for name in ("First", "Second"):
+            self.assertEqual(ps.security_status(fake.repos[name]), {
+                "secret_scanning": "disabled",
+                "secret_scanning_push_protection": "disabled",
+            })
+
+    def test_unknown_patch_outcome_restores_both_repositories(self):
+        fake = FakeRunner()
+        fake.add_repo("First", scanning="disabled", push="disabled")
+        fake.add_repo("Second", scanning="disabled", push="disabled")
+        fake.fail_patch_after = "Second"
+        with self.assertRaisesRegex(ps.PublicSecurityError, "simulated unknown PATCH outcome"):
+            ps.apply(config("First", "Second"), runner=fake)
+        for name in ("First", "Second"):
+            self.assertEqual(ps.security_status(fake.repos[name]), {
+                "secret_scanning": "disabled",
+                "secret_scanning_push_protection": "disabled",
+            })
+
     def test_apply_enables_and_verifies(self):
         fake = FakeRunner()
-        fake.add_repo("One", scanning=None, push=None)
+        fake.add_repo("One", scanning="disabled", push="disabled")
         result = ps.apply(config("One"), runner=fake)
         self.assertEqual(result["changed"], ["Yolol100/One"])
         state = ps.security_status(fake.repos["One"])
