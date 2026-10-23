@@ -77,6 +77,13 @@ class GovernanceAuditTests(unittest.TestCase):
         self.assertTrue(repo["default_branch_protected"])
         self.assertFalse(repo["classic_protection"]["protected"])
 
+    def test_governance_visibility_gate_runs_after_safety(self):
+        workflow = (pathlib.Path(__file__).parents[1] / "workflows" / "github-admin.yml").read_text(encoding="utf-8")
+        self.assertLess(workflow.index("- name: Apply and verify public default-branch safety"),
+                        workflow.index("- name: Audit repository governance"))
+        self.assertLess(workflow.index("- name: Verify public repository security drift"),
+                        workflow.index("- name: Audit repository governance"))
+
     def test_declared_private_visibility_matches(self):
         cfg = {"owner": "Yolol100", "repositories": [{"name": "elementorjson", "expected_visibility": "private"}]}
         repos = [{"repo": "Yolol100/elementorjson", "visibility": "private"}]
