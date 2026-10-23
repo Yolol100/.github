@@ -77,6 +77,27 @@ class GovernanceAuditTests(unittest.TestCase):
         self.assertTrue(repo["default_branch_protected"])
         self.assertFalse(repo["classic_protection"]["protected"])
 
+    def test_declared_private_visibility_matches(self):
+        cfg = {"owner": "Yolol100", "repositories": [{"name": "elementorjson", "expected_visibility": "private"}]}
+        repos = [{"repo": "Yolol100/elementorjson", "visibility": "private"}]
+        self.assertEqual(ga.visibility_mismatches(cfg, repos), [])
+
+    def test_public_visibility_drift_is_reported(self):
+        cfg = {"owner": "Yolol100", "repositories": [{"name": "elementorjson", "expected_visibility": "private"}]}
+        repos = [{"repo": "Yolol100/elementorjson", "visibility": "public"}]
+        self.assertEqual(ga.visibility_mismatches(cfg, repos), [{
+            "repo": "Yolol100/elementorjson", "expected": "private", "actual": "public",
+        }])
+
+    def test_missing_visibility_fails_closed(self):
+        cfg = {"owner": "Yolol100", "repositories": [{"name": "elementorjson", "expected_visibility": "private"}]}
+        self.assertEqual(len(ga.visibility_mismatches(cfg, [])), 1)
+
+    def test_unmanaged_visibility_has_no_new_requirement(self):
+        cfg = {"owner": "Yolol100", "repositories": [{"name": "ordinary"}]}
+        repos = [{"repo": "Yolol100/ordinary", "visibility": "public"}]
+        self.assertEqual(ga.visibility_mismatches(cfg, repos), [])
+
     def test_build_report_aggregates(self):
         cfg = {
             "owner": "Yolol100",
