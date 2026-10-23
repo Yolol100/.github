@@ -79,6 +79,9 @@ def validate(cfg):
             raise ConfigError(f"Duplicate repository entry: {name}")
         seen.add(name)
 
+        if "expected_visibility" in item and item["expected_visibility"] not in ("public", "private"):
+            raise ConfigError(f"Invalid expected_visibility for {name}")
+
         managed_fields = ("description", "homepage", "topics")
         if not any(field in item for field in managed_fields):
             raise ConfigError(
