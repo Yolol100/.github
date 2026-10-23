@@ -103,6 +103,10 @@ def plan(cfg, runner=run_gh):
             continue
 
         current = security_status(info)
+        if any(value not in ("enabled", "disabled") for value in current.values()):
+            raise PublicSecurityError(
+                f"Cannot verify complete security baseline for {repo}; refusing writes"
+            )
         if (
             current["secret_scanning"] == "enabled"
             and current["secret_scanning_push_protection"] == "enabled"
@@ -114,31 +118,68 @@ def plan(cfg, runner=run_gh):
 
 
 def apply(cfg, dry_run=False, runner=run_gh):
+    # Plan must resolve every public repository and both security statuses
+    # before making the first write. Unknown API fields fail closed.
     items = plan(cfg, runner=runner)
     if dry_run:
         return {"dry_run": True, "plan": items}
 
-    owner = cfg["owner"]
+    attempted = []
     changed = []
+    target = {"secret_scanning": "enabled", "secret_scanning_push_protection": "enabled"}
 
-    for item in items:
-        if item["action"] != "enable":
-            continue
-        name = item["repo"].split("/", 1)[1]
-        api_json(
-            f"repos/{owner}/{name}",
-            method="PATCH",
-            payload=desired_payload(),
-            runner=runner,
-        )
-        verify = api_json(f"repos/{owner}/{name}", runner=runner) or {}
-        state = security_status(verify)
-        if (
-            state["secret_scanning"] != "enabled"
-            or state["secret_scanning_push_protection"] != "enabled"
-        ):
-            raise PublicSecurityError(f"Security readback mismatch for {item['repo']}")
-        changed.append(item["repo"])
+    try:
+        for item in items:
+            if item["action"] != "enable":
+                continue
+            repo = item["repo"]
+            current_info = api_json(f"repos/{repo}", runner=runner) or {}
+            actual = security_status(current_info)
+            if (current_info.get("visibility") != "public"
+                    or bool(current_info.get("archived"))
+                    or actual != item["current"]):
+                raise PublicSecurityError(f"Stale security baseline for {repo}; refusing write")
+
+            # Register the attempt BEFORE PATCH, so an uncertain API outcome
+            # is reconciled and rolled back rather than silently ignored.
+            attempted.append(item)
+            api_json(f"repos/{repo}", method="PATCH", payload=desired_payload(), runner=runner)
+            verify = api_json(f"repos/{repo}", runner=runner) or {}
+            if security_status(verify) != target:
+                raise PublicSecurityError(f"Security readback mismatch for {repo}")
+            changed.append(repo)
+
+    except Exception as original_error:
+        rollback_errors = []
+        for item in reversed(attempted):
+            repo = item["repo"]
+            previous = item["current"]
+            try:
+                observed = security_status(api_json(f"repos/{repo}", runner=runner) or {})
+                if observed == previous:
+                    continue
+                if observed != target:
+                    raise PublicSecurityError(
+                        f"Ambiguous security state for {repo}; manual reconciliation required"
+                    )
+                restore_payload = {
+                    "security_and_analysis": {
+                        field: {"status": previous[field]}
+                        for field in ("secret_scanning", "secret_scanning_push_protection")
+                    }
+                }
+                api_json(f"repos/{repo}", method="PATCH", payload=restore_payload, runner=runner)
+                restored = security_status(api_json(f"repos/{repo}", runner=runner) or {})
+                if restored != previous:
+                    raise PublicSecurityError(f"Rollback readback mismatch for {repo}")
+            except Exception as rollback_error:
+                rollback_errors.append(f"{repo}: {rollback_error}")
+
+        if rollback_errors:
+            raise PublicSecurityError(
+                f"{original_error}; rollback incomplete: " + "; ".join(rollback_errors)
+            ) from original_error
+        raise
 
     return {"dry_run": False, "changed": changed, "plan": items}
 
