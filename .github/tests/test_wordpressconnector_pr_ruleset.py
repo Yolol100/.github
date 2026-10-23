@@ -97,6 +97,21 @@ class Tests(unittest.TestCase):
         f=Fake();f.fail_readback=True
         with self.assertRaises(rs.ProtectionError):rs.apply(C,runner=f)
         self.assertEqual([x['id'] for x in f.rules],[24222354])
+    def test_server_added_optional_defaults_are_semantically_equal(self):
+        r=rs.desired(C)
+        r['rules'][0]['parameters']['required_reviewers']=[]
+        del r['rules'][0]['parameters']['allowed_merge_methods']
+        del r['rules'][1]['parameters']['do_not_enforce_on_create']
+        self.assertTrue(rs.policy_matches(r,C))
+    def test_missing_required_check_app_fails_closed(self):
+        r=rs.desired(C)
+        del r['rules'][1]['parameters']['required_status_checks'][0]['integration_id']
+        self.assertFalse(rs.policy_matches(r,C))
+    def test_missing_conversation_resolution_fails_closed(self):
+        r=rs.desired(C)
+        r['rules'][0]['parameters']['required_review_thread_resolution']=False
+        self.assertFalse(rs.policy_matches(r,C))
+
     def test_unexpected_config_fails_closed(self):
         import tempfile
         with tempfile.TemporaryDirectory() as t:
