@@ -133,6 +133,14 @@ class GitHubAdminTests(unittest.TestCase):
         cfg = self.config()
         self.assertEqual(ga.validate(cfg), cfg)
 
+    def test_expected_visibility_is_validated(self):
+        cfg = self.config()
+        cfg["repositories"][0]["expected_visibility"] = "private"
+        self.assertEqual(ga.validate(cfg), cfg)
+        cfg["repositories"][0]["expected_visibility"] = "internal"
+        with self.assertRaises(ga.ConfigError):
+            ga.validate(cfg)
+
     def test_validate_accepts_description_only_entry(self):
         cfg = self.config()
         cfg["repositories"][0] = {
