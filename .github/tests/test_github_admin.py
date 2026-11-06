@@ -464,7 +464,7 @@ class GitHubAdminAuthWorkflowTests(unittest.TestCase):
         self.assertIn("if ! gh api user --jq '.login' > /dev/null 2>&1; then", preflight)
         self.assertIn("TH_ADMIN_TOKEN is invalid, expired or revoked", preflight)
         self.assertNotIn("set -x", preflight)
-        self.assertIn("permissions:\\n  contents: read", workflow)
+        self.assertIn("permissions:" + chr(10) + "  contents: read", workflow)
 
 
 
