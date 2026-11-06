@@ -450,5 +450,23 @@ class GitHubAdminTests(unittest.TestCase):
         self.assertEqual(fake.states["Yolol100/Two"], baseline_two)
 
 
+
+class GitHubAdminAuthWorkflowTests(unittest.TestCase):
+    """Static contract: fail early on an invalid secret before any config API calls."""
+
+    def test_invalid_admin_token_is_rejected_before_inventory(self):
+        workflow = (pathlib.Path(__file__).parents[1] / "workflows" / "github-admin.yml").read_text(encoding="utf-8")
+        start = workflow.index("      - name: Check GitHub admin token")
+        end = workflow.index("      - name: Verify repository inventory coverage")
+        preflight = workflow[start:end]
+        self.assertIn("GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}", preflight)
+        self.assertIn('if [ -z "${GH_TOKEN:-}" ]; then', preflight)
+        self.assertIn("if ! gh api user --jq '.login' > /dev/null 2>&1; then", preflight)
+        self.assertIn("TH_ADMIN_TOKEN is invalid, expired or revoked", preflight)
+        self.assertNotIn("set -x", preflight)
+        self.assertIn("permissions:" + chr(10) + "  contents: read", workflow)
+
+
+
 if __name__ == "__main__":
     unittest.main()
