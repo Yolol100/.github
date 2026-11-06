@@ -33,11 +33,18 @@ jobs:
       - name: Check GitHub admin token
         shell: bash
         env:
-          TH_ADMIN_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
+          GH_TOKEN: ${{ secrets.TH_ADMIN_TOKEN }}
         run: |
-          if [ -z "$TH_ADMIN_TOKEN" ]; then
+          set -euo pipefail
+          if [ -z "${GH_TOKEN:-}" ]; then
             echo "::error::Missing repository secret TH_ADMIN_TOKEN."
             echo "::error::Use a dedicated fine-grained PAT with All repositories access and Administration: read/write; this workflow writes only repositories declared in github-admin.json."
+            exit 1
+          fi
+          # Authenticate before any inventory or administrative write attempt.
+          # Never print the token or the API response on failure.
+          if ! gh api user --jq '.login' > /dev/null 2>&1; then
+            echo "::error::TH_ADMIN_TOKEN is invalid, expired or revoked. Renew the dedicated fine-grained PAT in Yolol100/.github > Settings > Secrets and variables > Actions."
             exit 1
           fi
 
