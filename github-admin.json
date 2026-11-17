@@ -403,16 +403,14 @@
     },
     {
       "name": "myhost-mailbox",
-      "description": "Controlled IMAP/SMTP mailbox runtime with bounded reads, explicit write confirmation, draft handling and send safety gates.",
+      "description": "Historical IMAP/SMTP mailbox reference. Runtime was removed from main; no active mail, drafts or sending.",
       "topics": [
-        "python",
+        "email",
         "imap",
         "smtp",
-        "email",
-        "automation",
         "security",
-        "human-in-the-loop",
-        "workflow"
+        "documentation",
+        "archive"
       ]
     },
     {
